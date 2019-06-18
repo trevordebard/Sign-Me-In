@@ -2,7 +2,11 @@ import App, { Container } from 'next/app';
 import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Head from 'next/head';
+import { faAngleRight, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import theme from '../theme';
 
+library.add(faAngleRight, faTrashAlt);
 const GlobalStyle = createGlobalStyle`  
   html {
     box-sizing: border-box;
@@ -16,12 +20,11 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
     margin: 0;
     font-size: 1.5rem;
+    input {
+      color: ${theme.font};
+    }
   }
 `;
-const theme = {
-  primary: 'hsl(282, 44%, 47%)',
-  primary_light: 'hsl(282, 46%, 60%)',
-};
 
 export default class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {

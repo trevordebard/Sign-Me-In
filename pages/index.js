@@ -1,10 +1,10 @@
+import React from 'react';
 import Link from 'next/link';
+import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
-import styled from 'styled-components';
 import Divider from '../components/global-styles/Divider';
 import StyledButton from '../components/global-styles/StyledButton';
-import { faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesomeIcon';
 
 const Logo = styled.img`
@@ -43,7 +43,7 @@ const RoomCodeInput = styled.div`
     font-size: 16px;
   }
   svg {
-    font-size: 2.5rem;
+    font-size: 3rem;
     margin-left: 5px;
   }
 `;
@@ -61,11 +61,13 @@ const Index = props => {
         <Logo src="/static/images/SMI_logo.png" alt="Sign Me In"></Logo>
         <Divider />
         <Content>
-          <StyledButton>Generate Room</StyledButton>
+          <Link href="/generate">
+            <StyledButton>Generate Room</StyledButton>
+          </Link>
           <DividerWithText>or</DividerWithText>
           <RoomCodeInput>
             <input type="text" placeholder="Enter room code"></input>
-            <StyledFontAwesomeIcon icon={faAngleRight} />
+            <StyledFontAwesomeIcon icon="angle-right" />
           </RoomCodeInput>
         </Content>
       </Box>
