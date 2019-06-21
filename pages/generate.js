@@ -7,6 +7,7 @@ import Divider from '../components/global-styles/Divider';
 import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesomeIcon';
 import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
+import HoverButton from '../components/global-styles/HoverButton';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -46,11 +47,13 @@ const InputContainer = styled.div`
     ::placeholder {
       color: ${props => props.theme.grey};
     }
+    :hover {
+      border: 1px solid ${props => props.theme.secondary};
+      box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.2);
+    }
     :focus {
       outline: none;
-    }
-    :hover {
-      box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.2);
+      border: 2px solid ${props => props.theme.secondary};
     }
   }
 `;
@@ -98,10 +101,13 @@ function generate(props) {
             value={fieldInput}
             placeholder="Enter Field"
           ></input>
-          <StyledButton type="button" onClick={addField} padding="1.2rem">
-            Add
-          </StyledButton>
+          <HoverButton type="button" onClick={addField} padding="1.2rem">
+            ADD
+          </HoverButton>
         </InputContainer>
+        <StyledButton type="button" padding="1.2rem">
+          Create Room
+        </StyledButton>
       </Box>
     </Layout>
   );

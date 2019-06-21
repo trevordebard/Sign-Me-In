@@ -41,6 +41,9 @@ const RoomCodeInput = styled.div`
     border: 0;
     padding: 15px;
     font-size: 16px;
+    :hover {
+      box-shadow: 0 1px 1px hsla(0, 0%, 0%, 0.2);
+    }
   }
   svg {
     font-size: 3rem;
