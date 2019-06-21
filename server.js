@@ -15,7 +15,7 @@ app
     const server = express();
     const router = express.Router();
     const apiUrl = process.env.API_URL;
-    console.log(apiUrl);
+
     router.get('/room/:roomCode', db.getUsers);
     router.post('/room', db.createRoom);
     router.post('/user', db.addUser);
