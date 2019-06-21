@@ -14,6 +14,19 @@ const pool = new Pool({
   port: process.env.DB_PORT,
 });
 
+const flattenObject = obj => {
+  const flattened = {};
+
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      Object.assign(flattened, flattenObject(obj[key]));
+    } else {
+      flattened[key] = obj[key];
+    }
+  });
+
+  return flattened;
+};
 const doesRoomExist = async roomCode => {
   try {
     const result = await pool.query(
@@ -39,6 +52,7 @@ const generateRandomString = length => {
 };
 
 const getUsers = async (req, res) => {
+  console.log('get users');
   const { roomCode } = req.params;
   const roomExists = await doesRoomExist(roomCode);
   if (!roomExists) {
@@ -52,9 +66,13 @@ const getUsers = async (req, res) => {
     const results = await pool.query(
       `SELECT first_name, last_name, data FROM users WHERE room_code='${roomCode}';`
     );
-    return res
-      .status(200)
-      .json(new Response(status.SUCCESS, null, { users: results.rows }));
+    const payload = results.rows.map(userObj => {
+      return {
+        ...flattenObject(userObj),
+        display_name: `${userObj.first_name} ${userObj.last_name}`,
+      };
+    });
+    return res.status(200).json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
     return res.json(new Response(status.UNKOWN, null, { error: err }));
   }
