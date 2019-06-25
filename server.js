@@ -1,5 +1,6 @@
 const express = require('express');
 const next = require('next');
+const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -7,15 +8,18 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const db = require('./queries');
 
-console.log(process.env.API_URL);
-console.log(process.env.DB_PORT);
 app
   .prepare()
   .then(() => {
     const server = express();
     const router = express.Router();
     const apiUrl = process.env.API_URL;
-
+    server.use(bodyParser.json());
+    server.use(
+      bodyParser.urlencoded({
+        extended: true,
+      })
+    );
     router.get('/room/:roomCode', db.getUsers);
     router.post('/room', db.createRoom);
     router.post('/user', db.addUser);
@@ -26,10 +30,11 @@ app
         apiUrl,
       });
     });
+    server.post('/room', db.createRoom);
 
     server.use('/api', router);
     server.get('*', (req, res) => {
-      return handle(req, res);
+      return handle(req, res, '/notfound');
     });
     server.listen(3000, err => {
       if (err) throw err;
