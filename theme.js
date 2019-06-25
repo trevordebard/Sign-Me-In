@@ -6,6 +6,7 @@ const theme = {
   grey_light1: 'hsl(212, 33%, 89%)',
   grey_light2: 'hsl(212, 33%, 95%)',
   red: 'hsl(360, 83%, 62%)',
-  font: 'hsl(209, 61%, 16%)',
+  font: 'hsl(209, 61%, 25%)',
+  font_light: 'hsl(209, 61%, 40%)',
 };
 export default theme;

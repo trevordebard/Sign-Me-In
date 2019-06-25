@@ -24,6 +24,11 @@ const GlobalStyle = createGlobalStyle`
       color: ${theme.font};
     }
   }
+  html,
+  body,
+  div#__next {
+    height: 100%;
+  }
 `;
 
 export default class MyApp extends App {
@@ -45,7 +50,11 @@ export default class MyApp extends App {
           <React.Fragment>
             <Head>
               <title>Sign Me In</title>
-              <link href="/static/fonts.css" rel="stylesheet" />
+              {/* <link href="/static/fonts.css" rel="stylesheet" /> */}
+              <link
+                href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap"
+                rel="stylesheet"
+              ></link>
             </Head>
             <GlobalStyle />
             <Component {...pageProps} />

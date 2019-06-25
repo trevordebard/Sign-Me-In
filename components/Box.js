@@ -9,4 +9,5 @@ export default styled.div`
   align-items: center;
   overflow: hidden;
   padding: 20px 0;
+  max-height: 80%;
 `;

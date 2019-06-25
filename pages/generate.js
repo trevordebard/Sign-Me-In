@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Router from 'next/router';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
@@ -8,6 +9,7 @@ import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesome
 import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
 import HoverButton from '../components/global-styles/HoverButton';
+import generateRoom from '../components/Generate/generateRoom';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -71,6 +73,13 @@ function generate(props) {
   };
   const handleFieldInputChange = e => setFieldInput(e.target.value);
 
+  const handleCreate = async () => {
+    const res = await generateRoom(roomFields);
+    if (res.data.status === 'SUCCESS') {
+      Router.push(`/room/${res.data.payload.roomCode}`);
+    }
+  };
+
   return (
     <Layout>
       <Box>
@@ -105,7 +114,7 @@ function generate(props) {
             ADD
           </HoverButton>
         </InputContainer>
-        <StyledButton type="button" padding="1.2rem">
+        <StyledButton onClick={handleCreate} type="button" padding="1.2rem">
           Create Room
         </StyledButton>
       </Box>

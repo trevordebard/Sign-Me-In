@@ -1,4 +1,6 @@
 const { Pool } = require('pg');
+const utils = require('pg/lib/utils');
+
 const Response = require('./Response');
 
 const status = {
@@ -27,6 +29,7 @@ const flattenObject = obj => {
 
   return flattened;
 };
+
 const doesRoomExist = async roomCode => {
   try {
     const result = await pool.query(
@@ -56,7 +59,7 @@ const getUsers = async (req, res) => {
   const { roomCode } = req.params;
   const roomExists = await doesRoomExist(roomCode);
   if (!roomExists) {
-    return res.status(404).json(
+    return res.status(200).json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
         message: 'That room does not exist.',
       })
@@ -82,12 +85,11 @@ const getUsers = async (req, res) => {
  * @fields must be of format ["string", "string 1", "etc"]
  */
 const createRoom = async (req, res) => {
-  // const { roomCode } = req.body;
   const roomCode = generateRandomString(4);
 
   const roomExists = await doesRoomExist(roomCode);
   if (roomExists) {
-    return res.status(404).json(
+    return res.json(
       new Response(status.KNOWN, 'roomExists', {
         message: 'That room already exists.',
       })
@@ -96,14 +98,14 @@ const createRoom = async (req, res) => {
 
   let { fields } = req.body;
   if (fields) {
-    fields = `ARRAY ${fields}`;
+    // Converts field array into format pg db can read.
+    fields = utils.prepareValue(fields);
   } else {
     fields = null;
   }
   try {
-    const results = await pool.query(
-      `INSERT INTO rooms (room_code, fields) VALUES ('${roomCode}', ${fields});`
-    );
+    const query = `INSERT INTO rooms (room_code, fields) VALUES ('${roomCode}', '${fields}');`;
+    const results = await pool.query(query);
     console.log(results);
     return res.status(201).json(
       new Response(status.SUCCESS, null, {
