@@ -84,7 +84,6 @@ room.getInitialProps = async ({ query, req, res }) => {
   const { roomCode, apiUrl } = query;
   try {
     const response = await axios.get(`${apiUrl}/room/${roomCode}`);
-    console.log(response.data);
     if (
       response.data.status === 'KNOWN' &&
       response.data.reason === 'roomDoesNotExist'

@@ -6,28 +6,12 @@ require('dotenv').config();
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
-const db = require('./queries');
-
 app
   .prepare()
   .then(() => {
     const server = express();
-    const router = express.Router();
     const apiUrl = process.env.API_URL;
-    server.use(bodyParser.json());
-    server.use(
-      bodyParser.urlencoded({
-        extended: true,
-      })
-    );
 
-    // router.get is /api calls
-    router.get('/room/:roomCode', db.getUsers);
-    router.get('/fields/:roomCode', db.getRoomFields);
-    router.post('/room', db.createRoom);
-    router.post('/user', db.addUser);
-
-    // server.get is for when a next/link gets clicked
     server.get('/room/:roomCode', (req, res) => {
       return app.render(req, res, '/room', {
         roomCode: req.params.roomCode,
@@ -41,9 +25,6 @@ app
       });
     });
 
-    server.post('/room', db.createRoom);
-
-    server.use('/api', router);
     server.get('*', (req, res) => {
       return handle(req, res, '/notfound');
     });

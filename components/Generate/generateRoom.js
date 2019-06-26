@@ -1,17 +1,14 @@
 import axios from 'axios';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
 const generateRoom = async fields => {
-  let api;
   let response;
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-    api = 'http://localhost:3000/api';
-  } else {
-    api = process.env.API_URL;
-  }
+  let api = publicRuntimeConfig.API_URL;
   api = `${api}/room`;
   try {
     console.log(fields);
-    response = await axios.post('/room', {
+    response = await axios.post(api, {
       fields,
     });
   } catch (err) {

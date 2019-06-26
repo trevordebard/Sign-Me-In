@@ -75,7 +75,7 @@ function generate(props) {
 
   const handleCreate = async () => {
     const res = await generateRoom(roomFields);
-    if (res.data.status === 'SUCCESS') {
+    if (res && res.data.status === 'SUCCESS') {
       Router.push(`/room/${res.data.payload.roomCode}`);
     }
   };
