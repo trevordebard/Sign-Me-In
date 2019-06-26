@@ -10,4 +10,11 @@ export default styled.div`
   overflow: hidden;
   padding: 20px 0;
   max-height: 80%;
+  max-width: 80%;
+  @media screen and (max-width: 479px) {
+    width: 95%;
+    max-width: 95%;
+    min-width: 3px;
+    max-height: 90%;
+  }
 `;

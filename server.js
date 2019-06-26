@@ -20,16 +20,27 @@ app
         extended: true,
       })
     );
+
+    // router.get is /api calls
     router.get('/room/:roomCode', db.getUsers);
+    router.get('/fields/:roomCode', db.getRoomFields);
     router.post('/room', db.createRoom);
     router.post('/user', db.addUser);
 
+    // server.get is for when a next/link gets clicked
     server.get('/room/:roomCode', (req, res) => {
       return app.render(req, res, '/room', {
         roomCode: req.params.roomCode,
         apiUrl,
       });
     });
+    server.get('/join/:roomCode', (req, res) => {
+      return app.render(req, res, '/join', {
+        roomCode: req.params.roomCode,
+        apiUrl,
+      });
+    });
+
     server.post('/room', db.createRoom);
 
     server.use('/api', router);

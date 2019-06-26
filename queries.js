@@ -48,7 +48,7 @@ const doesRoomExist = async roomCode => {
 const generateRandomString = length => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  for (let i = 0; i < length; i++) {
+  for (let i = 0; i < length; i += 1) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
@@ -126,10 +126,12 @@ const addUser = async (req, res) => {
   let { data } = req.body;
   if (!data) {
     data = null;
+  } else {
+    data = utils.prepareValue(data);
   }
   const roomExists = await doesRoomExist(roomCode);
   if (!roomExists) {
-    return res.status(404).json(
+    return res.json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
         message: 'That room does not exist',
       })
@@ -139,7 +141,7 @@ const addUser = async (req, res) => {
     const results = await pool.query(
       `INSERT INTO users (room_code, first_name, last_name, data) VALUES ('${roomCode}', '${firstName}', '${lastName}', '${data}');`
     );
-    res.status(201).json(
+    res.json(
       new Response(status.SUCCESS, null, {
         message: `User successfully added to room: ${roomCode}`,
       })
@@ -149,8 +151,39 @@ const addUser = async (req, res) => {
   }
 };
 
+const getRoomFields = async (req, res) => {
+  const { roomCode } = req.params;
+  const roomExists = await doesRoomExist(roomCode);
+  if (!roomExists) {
+    return res.status(200).json(
+      new Response(status.KNOWN, 'roomDoesNotExist', {
+        message: 'That room does not exist.',
+      })
+    );
+  }
+  try {
+    const results = await pool.query(
+      `SELECT fields FROM rooms WHERE room_code='${roomCode}';`
+    );
+    const payload = results.rows[0].fields;
+    if (!payload) {
+      return res.json(
+        new Response(status.UNKOWN, 'Unkown Error', {
+          message:
+            'There was a problem. Make sure you spelled the room name correctly.',
+        })
+      );
+    }
+    return res.json(new Response(status.SUCCESS, null, payload));
+  } catch (err) {
+    return res.json(new Response(status.UNKOWN, null, { error: err }));
+  }
+};
+
 module.exports = {
   getUsers,
   createRoom,
   addUser,
+  doesRoomExist,
+  getRoomFields,
 };
