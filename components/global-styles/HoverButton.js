@@ -14,4 +14,7 @@ export default styled.button`
     box-shadow: inset 400px 0 0 0 ${props => props.theme.secondary};
     color: white;
   }
+  :focus {
+    outline: none;
+  }
 `;

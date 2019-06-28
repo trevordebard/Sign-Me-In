@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import Router from 'next/router';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
@@ -10,6 +9,7 @@ import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
 import HoverButton from '../components/global-styles/HoverButton';
 import generateRoom from '../components/Generate/generateRoom';
+import StyledInput from '../components/global-styles/StyledInput';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -38,29 +38,9 @@ const StyledList = styled.ul`
 const InputContainer = styled.div`
   display: flex;
   margin: 1.5rem auto;
-  input {
-    box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.1);
-    font-size: 1.5rem;
-    padding: 0.6em 1em;
-    color: hsl(209, 34%, 30%);
-    border: 1px solid ${props => props.theme.grey};
-    border-radius: 2px;
-    margin-right: 5px;
-    ::placeholder {
-      color: ${props => props.theme.grey};
-    }
-    :hover {
-      border: 1px solid ${props => props.theme.secondary};
-      box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.2);
-    }
-    :focus {
-      outline: none;
-      border: 2px solid ${props => props.theme.secondary};
-    }
-  }
 `;
 
-function generate(props) {
+function generate() {
   const [roomFields, setRoomFields] = useState(['First Name', 'Last Name']);
   const [fieldInput, setFieldInput] = useState('');
 
@@ -106,12 +86,12 @@ function generate(props) {
           })}
         </StyledList>
         <InputContainer>
-          <input
+          <StyledInput
             type="text"
             onChange={e => handleFieldInputChange(e)}
             value={fieldInput}
             placeholder="Enter Field"
-          ></input>
+          ></StyledInput>
           <HoverButton type="button" onClick={addField} padding="1.2rem">
             ADD
           </HoverButton>
