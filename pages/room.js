@@ -1,8 +1,8 @@
-import React, { useState, useRef } from 'react';
-import Router from 'next/router';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import io from 'socket.io-client';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
@@ -49,11 +49,35 @@ const Name = styled.p`
   text-align: center;
   height: 15px;
 `;
-const Anchor = styled.div``;
 
+const Anchor = styled.div``;
 function room({ roomCode, users }) {
+  console.log(users);
+  const [userObjects, setUserObjects] = useState(users);
   const [names, setNames] = useState(users.map(item => item.display_name));
   const namesContainer = useRef(null);
+  const { current: socket } = useRef(io('http://localhost:3000'));
+  useEffect(() => {
+    setNames(userObjects.map(item => item.display_name));
+  }, [userObjects]);
+  useEffect(() => {
+    try {
+      socket.open();
+      socket.emit('join-room', roomCode);
+      socket.on('add-user', data => {
+        // NOT ABLE TO JOIN ROOM FROM MOBILE ANYMORE ??
+        console.log(data.user);
+        setUserObjects([...userObjects, data.user]);
+        console.log(userObjects);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // Return a callback to be run before unmount-ing.
+    return () => {
+      socket.close();
+    };
+  }, []);
 
   // This will be used when a new user joins the room
   const scrollToBottom = () => {
@@ -79,7 +103,6 @@ function room({ roomCode, users }) {
   );
 }
 
-room.propTypes = {};
 room.getInitialProps = async ({ query, req, res }) => {
   const { roomCode, apiUrl } = query;
   try {
@@ -88,11 +111,18 @@ room.getInitialProps = async ({ query, req, res }) => {
       response.data.status === 'KNOWN' &&
       response.data.reason === 'roomDoesNotExist'
     ) {
-      res.redirect('/');
+      return res.redirect('/');
     }
+    console.log(response.data);
     return { roomCode, users: response.data.payload };
   } catch (err) {
     console.log(err);
+    return res.redirect('/');
   }
+};
+
+room.propTypes = {
+  roomCode: PropTypes.string.isRequired,
+  users: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 export default room;

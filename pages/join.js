@@ -5,6 +5,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
+import io from 'socket.io-client';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import StyledInput from '../components/global-styles/StyledInput';
@@ -45,9 +46,9 @@ function join({ fields, roomCode, userApi }) {
     const { children } = form.current;
     Array.prototype.forEach.call(children, field => {
       if (field.id.toLowerCase() === 'first name') {
-        user.firstName = field.value;
+        user.first_name = field.value;
       } else if (field.id.toLowerCase() === 'last name') {
-        user.lastName = field.value;
+        user.last_name = field.value;
       } else {
         user.data = { ...user.data, [field.id]: field.value };
       }
@@ -55,6 +56,13 @@ function join({ fields, roomCode, userApi }) {
     const response = await axios.post(userApi, { ...user, roomCode });
     if (response.data.status === 'SUCCESS') {
       setSubmitted({ ...submitted, [roomCode]: true });
+      const socket = io('http://localhost:3000');
+      socket.emit('new-user', {
+        ...user,
+        display_name: `${user.first_name} ${user.last_name}`,
+        roomCode,
+      });
+      console.log('client: emit new user');
     }
   };
   const renderForm = () => (

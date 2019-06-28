@@ -37,6 +37,7 @@ const Content = styled.div`
 
 const Index = props => {
   const [roomInput, setRoomeInput] = useState('');
+
   return (
     <Layout>
       <Box>
