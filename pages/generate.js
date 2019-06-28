@@ -86,19 +86,21 @@ function generate(props) {
         <h3>What information do you need?</h3>
         <Divider />
         <StyledList>
-          {roomFields.map(field => {
+          {roomFields.map((field, index) => {
             return (
               <li>
                 <p>{field}</p>
-                <StyledFontAwesomeIcon
-                  icon="trash-alt"
-                  value="test"
-                  colors={{
-                    default: theme.grey,
-                    hover: theme.red,
-                  }}
-                  onClick={() => removeField(field)}
-                />
+                {index > 1 && (
+                  <StyledFontAwesomeIcon
+                    icon="trash-alt"
+                    value="test"
+                    colors={{
+                      default: theme.grey,
+                      hover: theme.red,
+                    }}
+                    onClick={() => removeField(field)}
+                  />
+                )}
               </li>
             );
           })}
