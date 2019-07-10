@@ -112,6 +112,7 @@ const Index = props => {
             ></StyledInput>
             <StyledFontAwesomeIcon
               icon="angle-right"
+              width="0"
               onClick={handleJoinClick}
             />
           </RoomCodeInput>
