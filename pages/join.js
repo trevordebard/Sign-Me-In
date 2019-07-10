@@ -44,6 +44,7 @@ function join({ fields, roomCode, userApi }) {
     e.preventDefault();
     const user = {};
     const { children } = form.current;
+    let allowSubmit = true;
     Array.prototype.forEach.call(children, field => {
       if (field.id.toLowerCase() === 'first name') {
         user.first_name = field.value;
@@ -52,17 +53,23 @@ function join({ fields, roomCode, userApi }) {
       } else {
         user.data = { ...user.data, [field.id]: field.value };
       }
+      if (field.value === '') {
+        allowSubmit = false;
+      }
     });
-    const response = await axios.post(userApi, { ...user, roomCode });
-    if (response.data.status === 'SUCCESS') {
-      setSubmitted({ ...submitted, [roomCode]: true });
-      const socket = io();
-      socket.emit('new-user', {
-        ...user,
-        display_name: `${user.first_name} ${user.last_name}`,
-        roomCode,
-      });
-      console.log('client: emit new user');
+    if (allowSubmit) {
+      const response = await axios.post(userApi, { ...user, roomCode });
+      if (response.data.status === 'SUCCESS') {
+        setSubmitted({ ...submitted, [roomCode]: true });
+        const socket = io();
+        socket.emit('new-user', {
+          ...user,
+          display_name: `${user.first_name} ${user.last_name}`,
+          roomCode,
+        });
+      }
+    } else {
+      // one or more fields is empty
     }
   };
   const renderForm = () => (

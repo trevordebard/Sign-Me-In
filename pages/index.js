@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Router from 'next/router';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
@@ -38,6 +39,19 @@ const Content = styled.div`
 const Index = props => {
   const [roomInput, setRoomeInput] = useState('');
 
+  const handleJoinClick = e => {
+    if (!roomInput) {
+      e.preventDefault();
+    } else {
+      Router.push(`/join/${roomInput}`);
+    }
+  };
+  // If the enter/return key is pressed
+  const checkForEnterKey = e => {
+    if (e.keyCode === 13) {
+      handleJoinClick(e);
+    }
+  };
   return (
     <Layout>
       <Box>
@@ -51,12 +65,14 @@ const Index = props => {
           <RoomCodeInput>
             <StyledInput
               placeholder="Enter room code"
+              onKeyDown={checkForEnterKey}
               onChange={e => setRoomeInput(e.target.value.toUpperCase())}
               value={roomInput}
             ></StyledInput>
-            <Link href={`/join/${roomInput}`}>
-              <StyledFontAwesomeIcon icon="angle-right" />
-            </Link>
+            <StyledFontAwesomeIcon
+              icon="angle-right"
+              onClick={handleJoinClick}
+            />
           </RoomCodeInput>
         </Content>
       </Box>
