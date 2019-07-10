@@ -5,7 +5,7 @@ import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
 import theme from '../theme';
 
-function generate(props) {
+function notfound(props) {
   const { reason } = props;
   let message = 'UNKOWN';
   if (reason && reason === 'roomDoesNotExist') {
@@ -24,11 +24,11 @@ function generate(props) {
     </Layout>
   );
 }
-generate.getInitialProps = ({ query }) => {
+notfound.getInitialProps = ({ query }) => {
   const { reason } = query;
   return { reason };
 };
 
-generate.propTypes = {};
+notfound.propTypes = {};
 
-export default generate;
+export default notfound;
