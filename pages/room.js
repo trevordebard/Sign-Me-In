@@ -52,23 +52,16 @@ const Name = styled.p`
 
 const Anchor = styled.div``;
 function room({ roomCode, users }) {
-  console.log(users);
   const [userObjects, setUserObjects] = useState(users);
-  const [names, setNames] = useState(users.map(item => item.display_name));
   const namesContainer = useRef(null);
   const { current: socket } = useRef(io());
-  useEffect(() => {
-    setNames(userObjects.map(item => item.display_name));
-  }, [userObjects]);
+
   useEffect(() => {
     try {
       socket.open();
       socket.emit('join-room', roomCode);
       socket.on('add-user', data => {
-        // NOT ABLE TO JOIN ROOM FROM MOBILE ANYMORE ??
-        console.log(data.user);
-        setUserObjects([...userObjects, data.user]);
-        console.log(userObjects);
+        setUserObjects(objs => [...objs, data.user]);
       });
     } catch (error) {
       console.log(error);
@@ -93,8 +86,8 @@ function room({ roomCode, users }) {
         </Header>
         <Divider />
         <NamesContainer ref={namesContainer}>
-          {names.map(name => (
-            <Name>{name}</Name>
+          {userObjects.map(user => (
+            <Name>{user.display_name}</Name>
           ))}
           <Anchor />
         </NamesContainer>
