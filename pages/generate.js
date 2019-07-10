@@ -45,8 +45,10 @@ function generate() {
   const [fieldInput, setFieldInput] = useState('');
 
   const addField = () => {
-    setRoomFields([...roomFields, fieldInput]);
-    setFieldInput('');
+    if (fieldInput !== '') {
+      setRoomFields([...roomFields, fieldInput]);
+      setFieldInput('');
+    }
   };
   const removeField = value => {
     setRoomFields(roomFields.filter(field => field !== value));
