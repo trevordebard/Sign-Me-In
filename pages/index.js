@@ -53,6 +53,7 @@ const Index = props => {
     } else {
       try {
         const roomInfo = await getRoomInfo();
+        console.log(roomInfo);
         if (roomInfo.roomExists) {
           // Right now I cannot find a way to pass fields in the route without it showing up in url
           // Future implementation should pass this data to /join
@@ -62,6 +63,8 @@ const Index = props => {
         } else if (roomInfo.error) {
           console.log('there was an error getting room info');
           console.log(roomInfo.error);
+        } else if (roomInfo.roomExists === false) {
+          setError('That room does not exist.');
         } else {
           console.log(roomInfo);
         }
