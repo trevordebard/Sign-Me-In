@@ -50,7 +50,11 @@ export default class MyApp extends App {
           <React.Fragment>
             <Head>
               <title>Sign Me In</title>
-              {/* <link href="/static/fonts.css" rel="stylesheet" /> */}
+              <link
+                rel="shortcut icon"
+                type="image/x-icon"
+                href="static/images/favicon.ico"
+              />
               <link
                 href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap"
                 rel="stylesheet"
