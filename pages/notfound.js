@@ -7,6 +7,10 @@ import theme from '../theme';
 
 function generate(props) {
   const { reason } = props;
+  let message = 'UNKOWN';
+  if (reason && reason === 'roomDoesNotExist') {
+    message = 'That room does not exist';
+  }
   return (
     <Layout>
       <Box>
@@ -14,12 +18,16 @@ function generate(props) {
         <Divider />
         <div style={{ color: theme.red }}>
           <strong>Reason: </strong>
-          {reason}
+          {message}
         </div>
       </Box>
     </Layout>
   );
 }
+generate.getInitialProps = ({ query }) => {
+  const { reason } = query;
+  return { reason };
+};
 
 generate.propTypes = {};
 

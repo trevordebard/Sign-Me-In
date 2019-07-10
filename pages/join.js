@@ -119,7 +119,7 @@ join.getInitialProps = async ({ query, req, res }) => {
       response.data.status === 'KNOWN' &&
       response.data.reason === 'roomDoesNotExist'
     ) {
-      return res.redirect('/');
+      return res.redirect('/notfound?reason=roomDoesNotExist');
     }
     return {
       roomCode,
