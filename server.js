@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const SocketIO = require('socket.io');
 require('dotenv').config();
-const cors = require('cors');
 const db = require('./queries');
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -14,7 +13,6 @@ nextApp
   .prepare()
   .then(() => {
     const app = express();
-    app.use(cors());
     app.use(bodyParser.json());
     app.use(
       bodyParser.urlencoded({
