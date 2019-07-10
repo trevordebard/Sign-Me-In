@@ -6,6 +6,7 @@ import io from 'socket.io-client';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
+import ErrorText from '../components/global-styles/ErrorText';
 
 const RoomBox = styled(Box)`
   max-width: 80vw;
@@ -51,8 +52,9 @@ const Name = styled.p`
 `;
 
 const Anchor = styled.div``;
-function room({ roomCode, users }) {
+function room({ roomCode, users, message }) {
   const [userObjects, setUserObjects] = useState(users);
+  const [errorMessage, setErrorMessage] = useState(message);
   const namesContainer = useRef(null);
   const { current: socket } = useRef(io());
 
@@ -63,8 +65,8 @@ function room({ roomCode, users }) {
       socket.on('add-user', data => {
         setUserObjects(objs => [...objs, data.user]);
       });
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
+      console.log(e);
     }
     // Return a callback to be run before unmount-ing.
     return () => {
@@ -86,11 +88,11 @@ function room({ roomCode, users }) {
         </Header>
         <Divider />
         <NamesContainer ref={namesContainer}>
-          {userObjects.map(user => (
-            <Name>{user.display_name}</Name>
-          ))}
+          {userObjects &&
+            userObjects.map(user => <Name>{user.display_name}</Name>)}
           <Anchor />
         </NamesContainer>
+        {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       </RoomBox>
     </Layout>
   );
@@ -100,13 +102,26 @@ room.getInitialProps = async ({ query, req, res }) => {
   const { roomCode, apiUrl } = query;
   try {
     const response = await axios.get(`${apiUrl}/room/${roomCode}`);
-    if (
-      response.data.status === 'KNOWN' &&
-      response.data.reason === 'roomDoesNotExist'
-    ) {
-      return res.redirect('/notfound?reason=roomDoesNotExist');
+    console.log(response);
+    if (response.data.status === 'KNOWN') {
+      if (response.data.reason === 'roomDoesNotExist') {
+        return res.redirect('/notfound?reason=roomDoesNotExist');
+      }
+      if (response.data.reason === 'connectionRefused') {
+        console.log('refused');
+        return {
+          error: response.data.payload.error,
+          message: response.data.payload.message,
+          roomCode,
+        };
+      }
+    } else if (response.data.status === 'SUCCESS') {
+      console.log('success...');
+      return { roomCode, users: response.data.payload };
+    } else {
+      console.log('unkown');
+      return { error: true, message: 'An unknown error occured', roomCode };
     }
-    return { roomCode, users: response.data.payload };
   } catch (err) {
     console.log(err);
     return res.redirect('/');
@@ -115,6 +130,9 @@ room.getInitialProps = async ({ query, req, res }) => {
 
 room.propTypes = {
   roomCode: PropTypes.string.isRequired,
-  users: PropTypes.arrayOf(PropTypes.object).isRequired,
+  users: PropTypes.arrayOf(PropTypes.object),
+};
+room.defaultProps = {
+  users: [],
 };
 export default room;

@@ -46,6 +46,18 @@ const doesRoomExist = async roomCode => {
   }
 };
 
+const getErrorResponse = err => {
+  if (err.errno === 'ECONNREFUSED') {
+    return new Response(status.KNOWN, 'connectionRefused', {
+      message: 'There was a problem connnecting to the database.',
+    });
+  }
+  return new Response(status.UNKOWN, null, {
+    error: err,
+    message: 'An unkown error occured while connecting to the server.',
+  });
+};
+
 const generateRandomString = length => {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -57,7 +69,12 @@ const generateRandomString = length => {
 
 const getUsers = async (req, res) => {
   const { roomCode } = req.params;
-  const roomExists = await doesRoomExist(roomCode);
+  let roomExists;
+  try {
+    roomExists = await doesRoomExist(roomCode);
+  } catch (err) {
+    return res.json(getErrorResponse(err));
+  }
   if (!roomExists) {
     return res.json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
@@ -79,7 +96,7 @@ const getUsers = async (req, res) => {
     return res.json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
     console.log('getUsers error');
-    return res.json(new Response(status.UNKOWN, null, { error: err }));
+    return res.json(getErrorResponse(err));
   }
 };
 /**
@@ -88,14 +105,19 @@ const getUsers = async (req, res) => {
  */
 const createRoom = async (req, res) => {
   const roomCode = generateRandomString(4);
-  const roomExists = await doesRoomExist(roomCode);
-  if (roomExists) {
-    return res.json(
-      new Response(status.KNOWN, 'roomExists', {
-        message: 'That room already exists.',
-      })
-    );
+  try {
+    const roomExists = await doesRoomExist(roomCode);
+    if (roomExists === true) {
+      return res.json(
+        new Response(status.KNOWN, 'roomExists', {
+          message: 'That room already exists.',
+        })
+      );
+    }
+  } catch (err) {
+    return res.json(getErrorResponse(err));
   }
+  console.log(`create room: ${roomCode}`);
 
   let { fields } = req.body;
   if (fields) {
@@ -109,7 +131,11 @@ const createRoom = async (req, res) => {
   }
   try {
     const query = `INSERT INTO rooms (room_code, fields) VALUES ($1, $2);`;
-    const results = await pool.query(query, [roomCode, fields]);
+    try {
+      const results = await pool.query(query, [roomCode, fields]);
+    } catch (err) {
+      return res.json(getErrorResponse(err));
+    }
     return res.json(
       new Response(status.SUCCESS, null, {
         message: 'Room created successfully',
@@ -158,7 +184,12 @@ const addUser = async (req, res) => {
 
 const getRoomFields = async (req, res) => {
   const { roomCode } = req.params;
-  const roomExists = await doesRoomExist(roomCode);
+  let roomExists;
+  try {
+    roomExists = await doesRoomExist(roomCode);
+  } catch (err) {
+    return res.json(getErrorResponse(err));
+  }
   if (!roomExists) {
     return res.json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
@@ -182,7 +213,9 @@ const getRoomFields = async (req, res) => {
     }
     return res.json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
-    return res.json(new Response(status.UNKOWN, null, { error: err }));
+    console.log('dis err');
+    return res.json(getErrorResponse(err));
+    // return res.json(new Response(status.UNKOWN, null, { error: err }));
   }
 };
 

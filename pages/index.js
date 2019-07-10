@@ -49,19 +49,24 @@ const Index = props => {
   const handleJoinClick = async e => {
     if (!roomInput) {
       e.preventDefault();
+      setError('Room code cannot be empty.');
     } else {
-      const roomInfo = await getRoomInfo();
-      if (roomInfo.roomExists) {
-        // Right now I cannot find a way to pass fields in the route without it showing up in url
-        // Future implementation should pass this data to /join
-        Router.push({
-          pathname: `/join/${roomInput}`,
-        });
-      } else if (roomInfo.error) {
-        console.log('there was an error getting room info');
-        console.log(roomInfo.error);
-      } else {
-        setError('That room does not exist.');
+      try {
+        const roomInfo = await getRoomInfo();
+        if (roomInfo.roomExists) {
+          // Right now I cannot find a way to pass fields in the route without it showing up in url
+          // Future implementation should pass this data to /join
+          Router.push({
+            pathname: `/join/${roomInput}`,
+          });
+        } else if (roomInfo.error) {
+          console.log('there was an error getting room info');
+          console.log(roomInfo.error);
+        } else {
+          console.log(roomInfo);
+        }
+      } catch (err) {
+        setError('An error occurred. Please try again.');
       }
     }
   };
@@ -75,11 +80,18 @@ const Index = props => {
   const getRoomInfo = async () => {
     try {
       const response = await axios.get(`${apiUrl}/fields/${roomInput}`);
-      if (
-        response.data.status === 'KNOWN' &&
-        response.data.reason === 'roomDoesNotExist'
-      ) {
-        return { roomExists: false };
+      if (response.data.status === 'KNOWN') {
+        console.log(response);
+        if (response.data.reason === 'roomDoesNotExist') {
+          return { roomExists: false };
+        }
+        if (response.data.reason === 'connectionRefused') {
+          setError('There was a problem connecting to the database');
+          return {
+            error: response.data.payload.error,
+            message: response.data.payload.message,
+          };
+        }
       }
       return {
         roomExists: true,

@@ -10,6 +10,7 @@ import StyledButton from '../components/global-styles/StyledButton';
 import HoverButton from '../components/global-styles/HoverButton';
 import generateRoom from '../components/Generate/generateRoom';
 import StyledInput from '../components/global-styles/StyledInput';
+import ErrorText from '../components/global-styles/ErrorText';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -43,6 +44,7 @@ const InputContainer = styled.div`
 function generate() {
   const [roomFields, setRoomFields] = useState(['First Name', 'Last Name']);
   const [fieldInput, setFieldInput] = useState('');
+  const [error, setError] = useState(null);
 
   const addField = () => {
     if (fieldInput !== '') {
@@ -57,8 +59,15 @@ function generate() {
 
   const handleCreate = async () => {
     const res = await generateRoom(roomFields);
+    console.log(res);
     if (res && res.data.status === 'SUCCESS') {
       Router.push(`/room/${res.data.payload.roomCode}`);
+    } else if (res.data.status === 'KNOWN') {
+      setError(res.data.payload.message);
+    } else if (res.err) {
+      console.log('There was an Unkown error');
+    } else {
+      setError('Unkown error. Please try again or contact support');
     }
   };
 
@@ -70,7 +79,7 @@ function generate() {
         <StyledList>
           {roomFields.map((field, index) => {
             return (
-              <li>
+              <li key={`${new Date()}_${field}`}>
                 <p>{field}</p>
                 {index > 1 && (
                   <StyledFontAwesomeIcon
@@ -101,6 +110,7 @@ function generate() {
         <StyledButton onClick={handleCreate} type="button" padding="1.2rem">
           Create Room
         </StyledButton>
+        {error && <ErrorText>{error}</ErrorText>}
       </Box>
     </Layout>
   );

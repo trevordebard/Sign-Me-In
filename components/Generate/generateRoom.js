@@ -12,6 +12,7 @@ const generateRoom = async fields => {
     });
   } catch (err) {
     console.log(err);
+    return { err };
   }
 
   return response;

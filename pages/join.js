@@ -39,8 +39,8 @@ const InputContainer = styled.div`
   }
 `;
 
-function join({ fields, roomCode, userApi }) {
-  const [error, setError] = useState(null);
+function join({ fields, roomCode, userApi, message }) {
+  const [errorMessage, setErrorMessage] = useState(message);
   const form = useRef();
   const [submitted, setSubmitted] = useSumbittedState({ [roomCode]: false });
   const handleSubmit = async e => {
@@ -71,32 +71,33 @@ function join({ fields, roomCode, userApi }) {
           roomCode,
         });
       } else if (response.data.status === 'KNOWN') {
-        setError(
+        setErrorMessage(
           `Error: ${response.data.reason}. You may refresh the page and try again. Contact support if the problem persists.`
         );
       } else if (response.data.status === 'UNKNOWN') {
-        setError(
+        setErrorMessage(
           'An unknown error has occurred. Contact support if the problem persists.'
         );
       }
     } else {
       // one or more fields is empty
-      setError('One or more fields are empty');
+      setErrorMessage('One or more fields are empty');
     }
   };
   const renderForm = () => (
     <div>
       <div ref={form}>
-        {fields.map(field => (
-          <StyledInput
-            id={field}
-            key={`${roomCode}_${field}_${new Date()}`}
-            placeholder={field}
-          />
-        ))}
+        {fields &&
+          fields.map(field => (
+            <StyledInput
+              id={field}
+              key={`${roomCode}_${field}_${new Date()}`}
+              placeholder={field}
+            />
+          ))}
       </div>
       <StyledButton onClick={e => handleSubmit(e)}>Submit</StyledButton>
-      {error && <ErrorText>{error}</ErrorText>}
+      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       <DividerWithText>or</DividerWithText>
       <Link href={`/room/${roomCode}`}>
         <a>View Room Users</a>
@@ -109,7 +110,7 @@ function join({ fields, roomCode, userApi }) {
       <Link href={`/room/${roomCode}`}>
         <a>Visit Room</a>
       </Link>
-      {error && <ErrorText>{error}</ErrorText>}
+      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
     </React.Fragment>
   );
   return (
@@ -129,11 +130,18 @@ join.getInitialProps = async ({ query, req, res }) => {
   const { roomCode, apiUrl } = query;
   try {
     const response = await axios.get(`${apiUrl}/fields/${roomCode}`);
-    if (
-      response.data.status === 'KNOWN' &&
-      response.data.reason === 'roomDoesNotExist'
-    ) {
-      return res.redirect('/notfound?reason=roomDoesNotExist');
+    if (response.data.status === 'KNOWN') {
+      if (response.data.reason === 'roomDoesNotExist') {
+        return res.redirect('/notfound?reason=roomDoesNotExist');
+      }
+      if (response.data.reason === 'connectionRefused') {
+        console.log('refused');
+        return {
+          error: response.data.payload.error,
+          message: response.data.payload.message,
+          roomCode,
+        };
+      }
     }
     return {
       roomCode,
@@ -146,8 +154,11 @@ join.getInitialProps = async ({ query, req, res }) => {
 };
 
 join.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.string).isRequired,
+  fields: PropTypes.arrayOf(PropTypes.string),
   roomCode: PropTypes.string.isRequired,
   userApi: PropTypes.string.isRequired,
+};
+join.defaultProps = {
+  fields: [],
 };
 export default join;
