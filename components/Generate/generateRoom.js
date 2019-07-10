@@ -7,7 +7,6 @@ const generateRoom = async fields => {
   let api = publicRuntimeConfig.API_URL;
   api = `${api}/room`;
   try {
-    console.log(fields);
     response = await axios.post(api, {
       fields,
     });

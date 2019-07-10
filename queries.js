@@ -57,9 +57,7 @@ const generateRandomString = length => {
 
 const getUsers = async (req, res) => {
   const { roomCode } = req.params;
-  console.log('getUsers');
   const roomExists = await doesRoomExist(roomCode);
-  console.log(roomExists);
   if (!roomExists) {
     return res.json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
@@ -73,7 +71,6 @@ const getUsers = async (req, res) => {
       [roomCode]
     );
     const payload = results.rows.map(userObj => {
-      console.log(userObj);
       return {
         ...flattenObject(userObj),
         display_name: `${userObj.first_name} ${userObj.last_name}`,
@@ -90,7 +87,6 @@ const getUsers = async (req, res) => {
  * @fields must be of format ["string", "string 1", "etc"]
  */
 const createRoom = async (req, res) => {
-  console.log('in');
   const roomCode = generateRandomString(4);
   const roomExists = await doesRoomExist(roomCode);
   if (roomExists) {

@@ -106,7 +106,6 @@ room.getInitialProps = async ({ query, req, res }) => {
     ) {
       return res.redirect('/');
     }
-    console.log(response.data);
     return { roomCode, users: response.data.payload };
   } catch (err) {
     console.log(err);
