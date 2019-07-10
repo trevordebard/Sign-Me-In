@@ -56,7 +56,7 @@ function room({ roomCode, users }) {
   const [userObjects, setUserObjects] = useState(users);
   const [names, setNames] = useState(users.map(item => item.display_name));
   const namesContainer = useRef(null);
-  const { current: socket } = useRef(io('http://localhost:3000'));
+  const { current: socket } = useRef(io());
   useEffect(() => {
     setNames(userObjects.map(item => item.display_name));
   }, [userObjects]);

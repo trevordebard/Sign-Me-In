@@ -56,7 +56,7 @@ function join({ fields, roomCode, userApi }) {
     const response = await axios.post(userApi, { ...user, roomCode });
     if (response.data.status === 'SUCCESS') {
       setSubmitted({ ...submitted, [roomCode]: true });
-      const socket = io('http://localhost:3000');
+      const socket = io();
       socket.emit('new-user', {
         ...user,
         display_name: `${user.first_name} ${user.last_name}`,

@@ -5,6 +5,7 @@ const http = require('http');
 const SocketIO = require('socket.io');
 require('dotenv').config();
 const cors = require('cors');
+const db = require('./queries');
 
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
@@ -14,9 +15,20 @@ nextApp
   .then(() => {
     const app = express();
     app.use(cors());
+    app.use(bodyParser.json());
+    app.use(
+      bodyParser.urlencoded({
+        extended: true,
+      })
+    );
     const server = http.Server(app);
     const io = SocketIO(server);
     const apiUrl = process.env.API_URL;
+
+    app.get('/api/fields/:roomCode', db.getRoomFields);
+    app.get('/api/room/:roomCode', db.getUsers);
+    app.post('/api/room', db.createRoom);
+    app.post('/api/user', db.addUser);
 
     app.get('/room/:roomCode', (req, res) => {
       return nextApp.render(req, res, '/room', {
@@ -57,10 +69,6 @@ nextApp
         console.log(res);
       });
     });
-    // app.listen(3000, err => {
-    //   if (err) throw err;
-    //   console.log('> Ready on http://localhost:3000');
-    // });
   })
   .catch(ex => {
     console.error(ex.stack);
