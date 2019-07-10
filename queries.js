@@ -33,7 +33,8 @@ const flattenObject = obj => {
 const doesRoomExist = async roomCode => {
   try {
     const result = await pool.query(
-      `SELECT id FROM rooms WHERE room_code='${roomCode}';`
+      `SELECT id FROM rooms WHERE room_code=$1;`,
+      [roomCode]
     );
     if (result.rows.length > 0) {
       return true;
@@ -56,7 +57,9 @@ const generateRandomString = length => {
 
 const getUsers = async (req, res) => {
   const { roomCode } = req.params;
+  console.log('getUsers');
   const roomExists = await doesRoomExist(roomCode);
+  console.log(roomExists);
   if (!roomExists) {
     return res.json(
       new Response(status.KNOWN, 'roomDoesNotExist', {
@@ -66,7 +69,8 @@ const getUsers = async (req, res) => {
   }
   try {
     const results = await pool.query(
-      `SELECT first_name, last_name, data FROM users WHERE room_code='${roomCode}';`
+      `SELECT first_name, last_name, data FROM users WHERE room_code=$1;`,
+      [roomCode]
     );
     const payload = results.rows.map(userObj => {
       console.log(userObj);
@@ -77,6 +81,7 @@ const getUsers = async (req, res) => {
     });
     return res.json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
+    console.log('getUsers error');
     return res.json(new Response(status.UNKOWN, null, { error: err }));
   }
 };
@@ -107,8 +112,8 @@ const createRoom = async (req, res) => {
     fields = null;
   }
   try {
-    const query = `INSERT INTO rooms (room_code, fields) VALUES ('${roomCode}', '${fields}');`;
-    const results = await pool.query(query);
+    const query = `INSERT INTO rooms (room_code, fields) VALUES ($1, $2);`;
+    const results = await pool.query(query, [roomCode, fields]);
     return res.json(
       new Response(status.SUCCESS, null, {
         message: 'Room created successfully',
@@ -140,8 +145,10 @@ const addUser = async (req, res) => {
     );
   }
   try {
+    // `INSERT INTO users (room_code, first_name, last_name, data) VALUES ('${roomCode}', '${first_name}', '${last_name}', '${data}');`
     const results = await pool.query(
-      `INSERT INTO users (room_code, first_name, last_name, data) VALUES ('${roomCode}', '${first_name}', '${last_name}', '${data}');`
+      `INSERT INTO users (room_code, first_name, last_name, data) VALUES ($1, $2, $3, $4);`,
+      [roomCode, first_name, last_name, data]
     );
     res.json(
       new Response(status.SUCCESS, null, {
@@ -165,7 +172,8 @@ const getRoomFields = async (req, res) => {
   }
   try {
     const results = await pool.query(
-      `SELECT fields FROM rooms WHERE room_code='${roomCode}';`
+      `SELECT fields FROM rooms WHERE room_code=$1;`,
+      [roomCode]
     );
     const payload = results.rows[0].fields;
     if (!payload) {
