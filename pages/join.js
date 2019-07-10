@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import Box from '../components/Box';
 import StyledInput from '../components/global-styles/StyledInput';
 import StyledButton from '../components/global-styles/StyledButton';
 import DividerWithText from '../components/global-styles/DividerWithText';
+import ErrorText from '../components/global-styles/ErrorText';
 
 const useSumbittedState = createPersistedState('submitted');
 
@@ -18,6 +19,7 @@ const InputContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 85%;
+  margin: auto 20px;
   div {
     flex-direction: column;
     display: flex;
@@ -38,6 +40,7 @@ const InputContainer = styled.div`
 `;
 
 function join({ fields, roomCode, userApi }) {
+  const [error, setError] = useState(null);
   const form = useRef();
   const [submitted, setSubmitted] = useSumbittedState({ [roomCode]: false });
   const handleSubmit = async e => {
@@ -67,9 +70,18 @@ function join({ fields, roomCode, userApi }) {
           display_name: `${user.first_name} ${user.last_name}`,
           roomCode,
         });
+      } else if (response.data.status === 'KNOWN') {
+        setError(
+          `Error: ${response.data.reason}. You may refresh the page and try again. Contact support if the problem persists.`
+        );
+      } else if (response.data.status === 'UNKNOWN') {
+        setError(
+          'An unknown error has occurred. Contact support if the problem persists.'
+        );
       }
     } else {
       // one or more fields is empty
+      setError('One or more fields are empty');
     }
   };
   const renderForm = () => (
@@ -84,6 +96,7 @@ function join({ fields, roomCode, userApi }) {
         ))}
       </div>
       <StyledButton onClick={e => handleSubmit(e)}>Submit</StyledButton>
+      {error && <ErrorText>{error}</ErrorText>}
       <DividerWithText>or</DividerWithText>
       <Link href={`/room/${roomCode}`}>
         <a>View Room Users</a>
@@ -96,6 +109,7 @@ function join({ fields, roomCode, userApi }) {
       <Link href={`/room/${roomCode}`}>
         <a>Visit Room</a>
       </Link>
+      {error && <ErrorText>{error}</ErrorText>}
     </React.Fragment>
   );
   return (
