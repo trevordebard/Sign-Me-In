@@ -34,9 +34,10 @@ nextApp
     app.get('*', (req, res) => {
       return handle(req, res, '/notfound');
     });
-    server.listen(3000, err => {
+    const port = process.env.PORT || 3000;
+    server.listen(port, err => {
       if (err) throw err;
-      console.log('> Ready on http://localhost:3000');
+      console.log(`> Ready on port ${port}`);
     });
 
     io.on('connection', socket => {
