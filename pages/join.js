@@ -64,7 +64,7 @@ function join({ fields, roomCode, userApi, message }) {
       const response = await axios.post(userApi, { ...user, roomCode });
       if (response.data.status === 'SUCCESS') {
         setSubmitted({ ...submitted, [roomCode]: true });
-        const socket = io();
+        const socket = io('https://smi-v2.herokuapp.com');
         socket.emit('new-user', {
           ...user,
           display_name: `${user.first_name} ${user.last_name}`,

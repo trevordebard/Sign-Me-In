@@ -58,7 +58,7 @@ function room({ roomCode, users, message }) {
   const [userObjects, setUserObjects] = useState(users);
   const [errorMessage, setErrorMessage] = useState(message);
   const namesContainer = useRef(null);
-  const { current: socket } = useRef(io());
+  const { current: socket } = useRef(io('https://smi-v2.herokuapp.com'));
 
   useEffect(() => {
     try {
