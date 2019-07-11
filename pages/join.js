@@ -6,12 +6,15 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
 import io from 'socket.io-client';
+import getConfig from 'next/config';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import StyledInput from '../components/global-styles/StyledInput';
 import StyledButton from '../components/global-styles/StyledButton';
 import DividerWithText from '../components/global-styles/DividerWithText';
 import ErrorText from '../components/global-styles/ErrorText';
+
+const { publicRuntimeConfig } = getConfig();
 
 const useSumbittedState = createPersistedState('submitted');
 
@@ -64,7 +67,7 @@ function join({ fields, roomCode, userApi, message }) {
       const response = await axios.post(userApi, { ...user, roomCode });
       if (response.data.status === 'SUCCESS') {
         setSubmitted({ ...submitted, [roomCode]: true });
-        const socket = io('https://smi-v2.herokuapp.com');
+        const socket = io(publicRuntimeConfig.SOCKET_URL);
         socket.emit('new-user', {
           ...user,
           display_name: `${user.first_name} ${user.last_name}`,

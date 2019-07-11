@@ -3,6 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import io from 'socket.io-client';
+import getConfig from 'next/config';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
@@ -10,6 +11,7 @@ import ErrorText from '../components/global-styles/ErrorText';
 import StyledButton from '../components/global-styles/StyledButton';
 import generateCSV from '../utils/generateCSV';
 
+const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
   max-width: 80vw;
   height: auto;
@@ -58,7 +60,7 @@ function room({ roomCode, users, message }) {
   const [userObjects, setUserObjects] = useState(users);
   const [errorMessage, setErrorMessage] = useState(message);
   const namesContainer = useRef(null);
-  const { current: socket } = useRef(io('https://smi-v2.herokuapp.com'));
+  const { current: socket } = useRef(io(publicRuntimeConfig.SOCKET_URL));
 
   useEffect(() => {
     try {
