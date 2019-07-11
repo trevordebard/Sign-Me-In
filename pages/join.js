@@ -54,7 +54,7 @@ function join({ fields, roomCode, userApi, message }) {
       } else if (field.id.toLowerCase() === 'last name') {
         user.last_name = field.value;
       } else {
-        user.data = { ...user.data, [field.id]: field.value };
+        user[field.id] = field.value;
       }
       if (field.value === '') {
         allowSubmit = false;

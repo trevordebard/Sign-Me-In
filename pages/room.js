@@ -7,6 +7,8 @@ import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
 import ErrorText from '../components/global-styles/ErrorText';
+import StyledButton from '../components/global-styles/StyledButton';
+import generateCSV from '../utils/generateCSV';
 
 const RoomBox = styled(Box)`
   max-width: 80vw;
@@ -74,9 +76,12 @@ function room({ roomCode, users, message }) {
     };
   }, []);
 
-  // This will be used when a new user joins the room
   const scrollToBottom = () => {
     namesContainer.current.scrollTop = namesContainer.current.scrollHeight;
+  };
+
+  const handleDownload = () => {
+    generateCSV(userObjects);
   };
 
   return (
@@ -89,9 +94,20 @@ function room({ roomCode, users, message }) {
         <Divider />
         <NamesContainer ref={namesContainer}>
           {userObjects &&
-            userObjects.map(user => <Name>{user.display_name}</Name>)}
+            userObjects.map(user => (
+              <Name
+                key={`${Math.random()
+                  .toString(36)
+                  .substring(7)}_${user.display_name}`}
+              >
+                {user.display_name}
+              </Name>
+            ))}
           <Anchor />
         </NamesContainer>
+        {userObjects.length > 0 && (
+          <StyledButton onClick={handleDownload}>Download</StyledButton>
+        )}
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       </RoomBox>
     </Layout>
