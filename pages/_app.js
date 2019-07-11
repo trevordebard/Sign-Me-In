@@ -2,11 +2,16 @@ import App, { Container } from 'next/app';
 import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Head from 'next/head';
-import { faAngleRight, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  faAngleRight,
+  faTrashAlt,
+  faEnvelope,
+} from '@fortawesome/free-solid-svg-icons';
+import { faGithub } from '@fortawesome/fontawesome-free-brands';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import theme from '../theme';
 
-library.add(faAngleRight, faTrashAlt);
+library.add(faAngleRight, faTrashAlt, faGithub, faEnvelope);
 const GlobalStyle = createGlobalStyle`  
   html {
     box-sizing: border-box;

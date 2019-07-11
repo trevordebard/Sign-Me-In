@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import Footer from './Footer';
 
 const Container = styled.div`
   display: flex;
@@ -17,7 +18,12 @@ const Container = styled.div`
 
 function Layout(props) {
   const { children } = props;
-  return <Container>{children}</Container>;
+  return (
+    <Container>
+      {children}
+      <Footer />
+    </Container>
+  );
 }
 Layout.propTypes = {
   children: PropTypes.element.isRequired,
