@@ -10,6 +10,7 @@ import Divider from '../components/global-styles/Divider';
 import ErrorText from '../components/global-styles/ErrorText';
 import StyledButton from '../components/global-styles/StyledButton';
 import generateCSV from '../utils/generateCSV';
+import flattenObject from '../utils/flattenObject';
 
 const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
@@ -67,7 +68,7 @@ function room({ roomCode, users, message }) {
       socket.open();
       socket.emit('join-room', roomCode);
       socket.on('add-user', data => {
-        setUserObjects(objs => [...objs, data.user]);
+        setUserObjects(objs => [...objs, flattenObject(data.user)]);
       });
     } catch (e) {
       console.log(e);
@@ -120,7 +121,6 @@ room.getInitialProps = async ({ query, req, res }) => {
   const { roomCode, apiUrl } = query;
   try {
     const response = await axios.get(`${apiUrl}/room/${roomCode}`);
-    console.log(response);
     if (response.data.status === 'KNOWN') {
       if (response.data.reason === 'roomDoesNotExist') {
         return res.redirect('/notfound?reason=roomDoesNotExist');
@@ -135,6 +135,7 @@ room.getInitialProps = async ({ query, req, res }) => {
       }
     } else if (response.data.status === 'SUCCESS') {
       console.log('success...');
+      console.log(response.data.payload);
       return { roomCode, users: response.data.payload };
     } else {
       console.log('unkown');
