@@ -53,7 +53,6 @@ const Index = props => {
     } else {
       try {
         const roomInfo = await getRoomInfo();
-        console.log(roomInfo);
         if (roomInfo.roomExists) {
           // Right now I cannot find a way to pass fields in the route without it showing up in url
           // Future implementation should pass this data to /join
@@ -84,7 +83,6 @@ const Index = props => {
     try {
       const response = await axios.get(`${apiUrl}/fields/${roomInput}`);
       if (response.data.status === 'KNOWN') {
-        console.log(response);
         if (response.data.reason === 'roomDoesNotExist') {
           return { roomExists: false };
         }

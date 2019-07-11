@@ -69,6 +69,7 @@ function room({ roomCode, users, message }) {
       socket.emit('join-room', roomCode);
       socket.on('add-user', data => {
         setUserObjects(objs => [...objs, flattenObject(data.user)]);
+        scrollToBottom();
       });
     } catch (e) {
       console.log(e);
