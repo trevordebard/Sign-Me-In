@@ -3,6 +3,8 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const http = require('http');
 const SocketIO = require('socket.io');
+const sslRedirect = require('heroku-ssl-redirect');
+
 require('dotenv').config();
 const db = require('./queries');
 
@@ -19,6 +21,8 @@ nextApp
         extended: true,
       })
     );
+    app.use(sslRedirect());
+
     const server = http.Server(app);
     const io = SocketIO(server);
     const apiUrl = process.env.API_URL;

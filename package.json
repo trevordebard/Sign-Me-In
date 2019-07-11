@@ -24,6 +24,7 @@
     "dotenv": "^8.0.0",
     "export-to-csv": "^0.2.1",
     "express": "^4.17.1",
+    "heroku-ssl-redirect": "^0.0.4",
     "next": "^8.1.0",
     "normalize.css": "^8.0.1",
     "pg": "^7.11.0",
