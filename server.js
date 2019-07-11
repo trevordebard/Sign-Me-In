@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const SocketIO = require('socket.io');
 const sslRedirect = require('heroku-ssl-redirect');
+const cors = require('cors');
 
 require('dotenv').config();
 const db = require('./queries');
@@ -21,8 +22,26 @@ nextApp
         extended: true,
       })
     );
+    // Redirect to https
     app.use(sslRedirect());
 
+    const allowedOrigins = ['http://localhost:3000', 'https://signmein.org'];
+    app.use(
+      cors({
+        origin(origin, callback) {
+          // allow requests with no origin
+          // (like mobile apps or curl requests)
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.indexOf(origin) === -1) {
+            const msg =
+              'The CORS policy for this site does not ' +
+              'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+          }
+          return callback(null, true);
+        },
+      })
+    );
     const server = http.Server(app);
     const io = SocketIO(server);
     const apiUrl = process.env.API_URL;
