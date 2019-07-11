@@ -25,7 +25,10 @@ nextApp
     // Redirect to https
     app.use(sslRedirect());
 
-    const allowedOrigins = ['http://localhost:3000', 'https://signmein.org'];
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'https://www.signmein.org',
+    ];
     app.use(
       cors({
         origin(origin, callback) {
