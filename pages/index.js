@@ -50,11 +50,7 @@ const Index = props => {
       try {
         const roomInfo = await getRoomInfo(roomInput);
         if (roomInfo.roomExists) {
-          // Right now I cannot find a way to pass fields in the route without it showing up in url
-          // Future implementation should pass this data to /join
-          Router.push({
-            pathname: `/join/${roomInput}`,
-          });
+          Router.push(`/join/[roomCode]`, `/join/${roomInput}`);
         } else if (roomInfo.error && roomInfo.reason === 'connectionRefused') {
           setError(roomInfo.message);
         } else if (roomInfo && roomInfo.roomExists === false) {

@@ -1,18 +1,18 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
 import io from 'socket.io-client';
 import getConfig from 'next/config';
-import Layout from '../components/Layout';
-import Box from '../components/Box';
-import StyledInput from '../components/global-styles/StyledInput';
-import StyledButton from '../components/global-styles/StyledButton';
-import DividerWithText from '../components/global-styles/DividerWithText';
-import ErrorText from '../components/global-styles/ErrorText';
-import * as api from '../lib/api';
+import * as api from '../../lib/api';
+import Layout from '../../components/Layout';
+import Box from '../../components/Box';
+import StyledInput from '../../components/global-styles/StyledInput';
+import StyledButton from '../../components/global-styles/StyledButton';
+import DividerWithText from '../../components/global-styles/DividerWithText';
+import ErrorText from '../../components/global-styles/ErrorText';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -42,7 +42,9 @@ const InputContainer = styled.div`
   }
 `;
 
-function join({ fields, roomCode, userApi, message }) {
+const Join = ({ message, fields }) => {
+  const router = useRouter();
+  const { roomCode } = router.query;
   const [errorMessage, setErrorMessage] = useState(message);
   const form = useRef();
   const [submitted, setSubmitted] = useSumbittedState({ [roomCode]: false });
@@ -123,14 +125,13 @@ function join({ fields, roomCode, userApi, message }) {
       </Box>
     </Layout>
   );
-}
-
-join.propTypes = {};
-join.getInitialProps = async ({ query, req, res }) => {
+};
+Join.getInitialProps = async ({ query, res }) => {
   const { roomCode } = query;
   try {
     const response = await api.getRoomInfo(roomCode);
     if (response.roomExists) {
+      console.log(response);
       return response;
     }
     if (response.reason === 'roomDoesNotExist') {
@@ -145,12 +146,4 @@ join.getInitialProps = async ({ query, req, res }) => {
   }
 };
 
-join.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.string),
-  roomCode: PropTypes.string.isRequired,
-  userApi: PropTypes.string.isRequired,
-};
-join.defaultProps = {
-  fields: [],
-};
-export default join;
+export default Join;
