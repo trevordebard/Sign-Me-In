@@ -1,4 +1,6 @@
+/* eslint-disable react/no-danger */
 import App, { Container } from 'next/app';
+import Router from 'next/router';
 import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import Head from 'next/head';
@@ -10,8 +12,10 @@ import {
 import { faGithub } from '@fortawesome/fontawesome-free-brands';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import theme from '../theme';
+import * as gtag from '../lib/gtag';
 
 library.add(faAngleRight, faTrashAlt, faGithub, faEnvelope);
+
 const GlobalStyle = createGlobalStyle`  
   html {
     box-sizing: border-box;
@@ -47,6 +51,10 @@ export default class MyApp extends App {
     return { pageProps };
   }
 
+  componentDidMount() {
+    Router.events.on('routeChangeComplete', url => gtag.pageview(url));
+  }
+
   render() {
     const { Component, pageProps } = this.props;
     return (
@@ -64,6 +72,21 @@ export default class MyApp extends App {
                 href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap"
                 rel="stylesheet"
               ></link>
+              {/* Global Site Tag (gtag.js) - Google Analytics */}
+              <script
+                async
+                src={`https://www.googletagmanager.com/gtag/js?id=${gtag.GA_TRACKING_ID}`}
+              />
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${gtag.GA_TRACKING_ID}');
+          `,
+                }}
+              />
             </Head>
             <GlobalStyle />
             <Component {...pageProps} />
