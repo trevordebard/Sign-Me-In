@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import Router from 'next/router';
 import styled from 'styled-components';
-import getConfig from 'next/config';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import Divider from '../components/global-styles/Divider';
@@ -12,9 +10,7 @@ import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesome
 import StyledInput from '../components/global-styles/StyledInput';
 import DividerWithText from '../components/global-styles/DividerWithText';
 import ErrorText from '../components/global-styles/ErrorText';
-
-const { publicRuntimeConfig } = getConfig();
-const apiUrl = publicRuntimeConfig.API_URL;
+import * as api from '../lib/api';
 
 const Logo = styled.img`
   width: 180px;
@@ -59,13 +55,12 @@ const Index = props => {
           Router.push({
             pathname: `/join/${roomInput}`,
           });
-        } else if (roomInfo.error) {
-          console.log('there was an error getting room info');
-          console.log(roomInfo.error);
+        } else if (roomInfo.error && roomInfo.reason === 'connectionRefused') {
+          setError(roomInfo.message);
         } else if (roomInfo.roomExists === false) {
           setError('That room does not exist.');
         } else {
-          console.log(roomInfo);
+          setError('An unknown error occurred.');
         }
       } catch (err) {
         setError('An error occurred. Please try again.');
@@ -80,28 +75,8 @@ const Index = props => {
   };
 
   const getRoomInfo = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/fields/${roomInput}`);
-      if (response.data.status === 'KNOWN') {
-        if (response.data.reason === 'roomDoesNotExist') {
-          return { roomExists: false };
-        }
-        if (response.data.reason === 'connectionRefused') {
-          setError('There was a problem connecting to the database');
-          return {
-            error: response.data.payload.error,
-            message: response.data.payload.message,
-          };
-        }
-      }
-      return {
-        roomExists: true,
-        fields: response.data.payload,
-        userApi: `${apiUrl}/user`,
-      };
-    } catch (err) {
-      return { roomExists: false, error: err };
-    }
+    const response = await api.getRoomInfo(roomInput);
+    return response;
   };
   return (
     <Layout>

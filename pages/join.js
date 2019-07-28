@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
@@ -13,6 +12,7 @@ import StyledInput from '../components/global-styles/StyledInput';
 import StyledButton from '../components/global-styles/StyledButton';
 import DividerWithText from '../components/global-styles/DividerWithText';
 import ErrorText from '../components/global-styles/ErrorText';
+import * as api from '../lib/api';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -65,8 +65,8 @@ function join({ fields, roomCode, userApi, message }) {
       }
     });
     if (allowSubmit) {
-      const response = await axios.post(userApi, { ...user, roomCode });
-      if (response.data.status === 'SUCCESS') {
+      const response = await api.addUser({ ...user, roomCode });
+      if (response.status === 'SUCCESS') {
         setSubmitted({ ...submitted, [roomCode]: true });
         const socket = io(publicRuntimeConfig.SOCKET_URL);
         socket.emit('new-user', {
@@ -74,14 +74,10 @@ function join({ fields, roomCode, userApi, message }) {
           display_name: `${user.first_name} ${user.last_name}`,
           roomCode,
         });
-      } else if (response.data.status === 'KNOWN') {
-        setErrorMessage(
-          `Error: ${response.data.reason}. You may refresh the page and try again. Contact support if the problem persists.`
-        );
-      } else if (response.data.status === 'UNKNOWN') {
-        setErrorMessage(
-          'An unknown error has occurred. Contact support if the problem persists.'
-        );
+      } else if (response.status === 'KNOWN') {
+        setErrorMessage(response.message);
+      } else {
+        setErrorMessage(response.message);
       }
     } else {
       // one or more fields is empty
@@ -131,29 +127,21 @@ function join({ fields, roomCode, userApi, message }) {
 
 join.propTypes = {};
 join.getInitialProps = async ({ query, req, res }) => {
-  const { roomCode, apiUrl } = query;
+  const { roomCode } = query;
   try {
-    const response = await axios.get(`${apiUrl}/fields/${roomCode}`);
-    if (response.data.status === 'KNOWN') {
-      if (response.data.reason === 'roomDoesNotExist') {
-        return res.redirect('/notfound?reason=roomDoesNotExist');
-      }
-      if (response.data.reason === 'connectionRefused') {
-        console.log('refused');
-        return {
-          error: response.data.payload.error,
-          message: response.data.payload.message,
-          roomCode,
-        };
-      }
+    const response = await api.getRoomInfo(roomCode);
+    if (response.roomExists) {
+      return response;
     }
-    return {
-      roomCode,
-      fields: response.data.payload,
-      userApi: `${apiUrl}/user`,
-    };
-  } catch (err) {
-    return res.redirect('/');
+    if (response.reason === 'roomDoesNotExist') {
+      return res.redirect('/notfound?reason=roomDoesNotExist');
+    }
+    if (response.reason === 'connectionRefused') {
+      return res.redirect('/notfound?reason=connectionRefused');
+    }
+    return res.redirect('/?error=true');
+  } catch (error) {
+    return res.redirect('/?error=true');
   }
 };
 

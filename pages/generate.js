@@ -8,9 +8,9 @@ import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesome
 import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
 import HoverButton from '../components/global-styles/HoverButton';
-import generateRoom from '../components/Generate/generateRoom';
 import StyledInput from '../components/global-styles/StyledInput';
 import ErrorText from '../components/global-styles/ErrorText';
+import * as api from '../lib/api';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -58,7 +58,7 @@ function generate() {
   const handleFieldInputChange = e => setFieldInput(e.target.value);
 
   const handleCreate = async () => {
-    const res = await generateRoom(roomFields);
+    const res = await api.generateRoom(roomFields);
     if (res && res.data.status === 'SUCCESS') {
       Router.push(`/room/${res.data.payload.roomCode}`);
     } else if (res.data.status === 'KNOWN') {

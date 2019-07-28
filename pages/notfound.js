@@ -10,6 +10,8 @@ function notfound(props) {
   let message = 'UNKOWN';
   if (reason && reason === 'roomDoesNotExist') {
     message = 'That room does not exist';
+  } else if (reason && reason === 'connectionRefused') {
+    message = 'Error connection to the database';
   }
   return (
     <Layout>
