@@ -48,7 +48,7 @@ const Index = props => {
       setError('Room code cannot be empty.');
     } else {
       try {
-        const roomInfo = await getRoomInfo();
+        const roomInfo = await getRoomInfo(roomInput);
         if (roomInfo.roomExists) {
           // Right now I cannot find a way to pass fields in the route without it showing up in url
           // Future implementation should pass this data to /join
@@ -57,7 +57,7 @@ const Index = props => {
           });
         } else if (roomInfo.error && roomInfo.reason === 'connectionRefused') {
           setError(roomInfo.message);
-        } else if (roomInfo.roomExists === false) {
+        } else if (roomInfo && roomInfo.roomExists === false) {
           setError('That room does not exist.');
         } else {
           setError('An unknown error occurred.');
