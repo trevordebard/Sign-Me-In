@@ -54,19 +54,6 @@ nextApp
     app.post('/api/room', db.createRoom);
     app.post('/api/user', db.addUser);
 
-    app.get('/room/:roomCode', (req, res) => {
-      return nextApp.render(req, res, '/room', {
-        roomCode: req.params.roomCode,
-        apiUrl,
-      });
-    });
-    app.get('/join/:roomCode', (req, res) => {
-      return nextApp.render(req, res, '/join', {
-        roomCode: req.params.roomCode,
-        apiUrl,
-      });
-    });
-
     app.get('*', (req, res) => {
       return handle(req, res, '/notfound');
     });

@@ -60,7 +60,7 @@ function generate() {
   const handleCreate = async () => {
     const res = await api.generateRoom(roomFields);
     if (res && res.data.status === 'SUCCESS') {
-      Router.push(`/room/${res.data.payload.roomCode}`);
+      Router.push(`/room/[roomCode]`, `/room/${res.data.payload.roomCode}`);
     } else if (res.data.status === 'KNOWN') {
       setError(res.data.payload.message);
     } else if (res.err) {

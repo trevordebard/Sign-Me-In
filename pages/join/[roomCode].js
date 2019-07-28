@@ -101,7 +101,7 @@ const Join = ({ message, fields }) => {
       <StyledButton onClick={e => handleSubmit(e)}>Submit</StyledButton>
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       <DividerWithText>or</DividerWithText>
-      <Link href={`/room/${roomCode}`}>
+      <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
         <a>View Room Users</a>
       </Link>
     </div>
@@ -109,7 +109,7 @@ const Join = ({ message, fields }) => {
   const renderSubmitted = () => (
     <React.Fragment>
       <h1>Submitted!</h1>
-      <Link href={`/room/${roomCode}`}>
+      <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
         <a>Visit Room</a>
       </Link>
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}

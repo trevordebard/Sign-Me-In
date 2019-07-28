@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import getConfig from 'next/config';
-import Layout from '../components/Layout';
-import Box from '../components/Box';
-import Divider from '../components/global-styles/Divider';
-import ErrorText from '../components/global-styles/ErrorText';
-import StyledButton from '../components/global-styles/StyledButton';
-import generateCSV from '../utils/generateCSV';
-import flattenObject from '../utils/flattenObject';
-import * as api from '../lib/api';
+import Layout from '../../components/Layout';
+import Box from '../../components/Box';
+import Divider from '../../components/global-styles/Divider';
+import ErrorText from '../../components/global-styles/ErrorText';
+import StyledButton from '../../components/global-styles/StyledButton';
+import generateCSV from '../../utils/generateCSV';
+import flattenObject from '../../utils/flattenObject';
+import * as api from '../../lib/api';
 
 const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
@@ -118,8 +118,9 @@ function room({ roomCode, users, message }) {
   );
 }
 
-room.getInitialProps = async ({ query, req, res }) => {
+room.getInitialProps = async ({ query }) => {
   const { roomCode } = query;
+  console.log(`roomcode! ${roomCode}`);
   return api.getUsers(roomCode);
 };
 
