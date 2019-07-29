@@ -95,7 +95,6 @@ const getUsers = async (req, res) => {
     });
     return res.json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
-    console.log('getUsers error');
     return res.json(getErrorResponse(err));
   }
 };
@@ -117,7 +116,6 @@ const createRoom = async (req, res) => {
   } catch (err) {
     return res.json(getErrorResponse(err));
   }
-  console.log(`create room: ${roomCode}`);
 
   let { fields } = req.body;
   if (fields) {
@@ -213,7 +211,6 @@ const getRoomFields = async (req, res) => {
     }
     return res.json(new Response(status.SUCCESS, null, payload));
   } catch (err) {
-    console.log('dis err');
     return res.json(getErrorResponse(err));
     // return res.json(new Response(status.UNKOWN, null, { error: err }));
   }

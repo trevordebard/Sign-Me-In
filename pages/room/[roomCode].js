@@ -120,7 +120,6 @@ function room({ roomCode, users, message }) {
 
 room.getInitialProps = async ({ query }) => {
   const { roomCode } = query;
-  console.log(`roomcode! ${roomCode}`);
   return api.getUsers(roomCode);
 };
 

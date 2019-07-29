@@ -131,7 +131,6 @@ Join.getInitialProps = async ({ query, res }) => {
   try {
     const response = await api.getRoomInfo(roomCode);
     if (response.roomExists) {
-      console.log(response);
       return response;
     }
     if (response.reason === 'roomDoesNotExist') {
