@@ -47,7 +47,6 @@ nextApp
     );
     const server = http.Server(app);
     const io = SocketIO(server);
-    const apiUrl = process.env.API_URL;
 
     app.get('/api/fields/:roomCode', db.getRoomFields);
     app.get('/api/room/:roomCode', db.getUsers);
