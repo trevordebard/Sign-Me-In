@@ -16,5 +16,6 @@ export default styled.button`
   }
   :focus {
     outline: none;
+    border: 1px solid ${props => props.theme.primary};
   }
 `;
