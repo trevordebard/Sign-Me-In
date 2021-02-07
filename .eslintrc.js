@@ -14,6 +14,7 @@ module.exports = {
     'no-use-before-define': ['off'],
     'no-console': ['off'],
     'no-unused-vars': ['error', { args: 'none' }],
+    'arrow-body-style': 'as-needed',
     'max-len': [
       'warn',
       {
