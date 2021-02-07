@@ -3,7 +3,6 @@ import Router from 'next/router';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
-import Divider from '../components/global-styles/Divider';
 import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesomeIcon';
 import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
@@ -81,7 +80,6 @@ function generate() {
                 {index > 1 && (
                   <StyledFontAwesomeIcon
                     icon="trash-alt"
-                    value="test"
                     colors={{
                       default: theme.grey,
                       hover: theme.red,

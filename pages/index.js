@@ -9,7 +9,7 @@ import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesome
 import StyledInput from '../components/global-styles/StyledInput';
 import DividerWithText from '../components/global-styles/DividerWithText';
 import ErrorText from '../components/global-styles/ErrorText';
-import * as api from '../lib/api';
+import * as api from '../lib/api'
 
 const Logo = styled.img`
   width: 180px;
@@ -47,7 +47,7 @@ const Index = (props) => {
       setError('Room code cannot be empty.');
     } else {
       try {
-        const roomInfo = await getRoomInfo(roomInput);
+        const roomInfo = await getRoomInfo();
         if (roomInfo.roomExists) {
           Router.push(`/join/[roomCode]`, `/join/${roomInput}`);
         } else if (roomInfo.error && roomInfo.reason === 'connectionRefused') {

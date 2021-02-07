@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -13,6 +12,7 @@ import StyledInput from '../../components/global-styles/StyledInput';
 import StyledButton from '../../components/global-styles/StyledButton';
 import DividerWithText from '../../components/global-styles/DividerWithText';
 import ErrorText from '../../components/global-styles/ErrorText';
+import { GetServerSideProps } from 'next';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -126,23 +126,50 @@ const Join = ({ message, fields }) => {
     </Layout>
   );
 };
-Join.getInitialProps = async ({ query, res }) => {
-  const { roomCode } = query;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { roomCode } = context.query;
   try {
     const response = await api.getRoomInfo(roomCode);
     if (response.roomExists) {
-      return response;
+      return {
+        props: response
+      };
     }
     if (response.reason === 'roomDoesNotExist') {
-      return res.redirect('/notfound?reason=roomDoesNotExist');
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/notfound?reason=roomDoesNotExist',
+        },
+      };
     }
     if (response.reason === 'connectionRefused') {
-      return res.redirect('/notfound?reason=connectionRefused');
+      return {
+        redirect: {
+          permanent: false,
+          destination: '/notfound?reason=connectionRefused',
+        },
+      };
     }
-    return res.redirect('/?error=true');
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/?error=true',
+      },
+    };
   } catch (error) {
-    return res.redirect('/?error=true');
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/?error=true',
+      },
+    };
   }
-};
+}
+
+// Join.getInitialProps = async ({ query, res }) => {
+  
+// };
 
 export default Join;

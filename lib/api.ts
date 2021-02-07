@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -85,8 +85,8 @@ export const addUser = async payload => {
   };
 };
 
-export const generateRoom = async fields => {
-  let response;
+export const generateRoom = async (fields): Promise<AxiosResponse<{fields?: string[], status?: string}>> => {
+  let response: AxiosResponse<{ fields: string[] }>;
   try {
     response = await axios.post(`${API_URL}/room`, {
       fields,
@@ -95,6 +95,5 @@ export const generateRoom = async fields => {
     console.log(err);
     return { err };
   }
-
   return response;
 };

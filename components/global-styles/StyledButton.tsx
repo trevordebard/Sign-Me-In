@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-const StyledButton = styled.button`
+interface iButtonProps {
+  outline?: boolean
+  padding?: string
+}
+const StyledButton = styled.button<iButtonProps>`
   background-color: ${props => props.theme.primary};
   color: white;
   border-radius: 5px;

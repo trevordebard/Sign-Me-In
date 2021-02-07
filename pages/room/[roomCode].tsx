@@ -5,12 +5,12 @@ import io from 'socket.io-client';
 import getConfig from 'next/config';
 import Layout from '../../components/Layout';
 import Box from '../../components/Box';
-import Divider from '../../components/global-styles/Divider';
 import ErrorText from '../../components/global-styles/ErrorText';
 import StyledButton from '../../components/global-styles/StyledButton';
 import generateCSV from '../../utils/generateCSV';
 import flattenObject from '../../utils/flattenObject';
 import * as api from '../../lib/api';
+import { GetServerSideProps } from 'next';
 
 const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
@@ -116,11 +116,15 @@ function room({ roomCode, users, message }) {
     </Layout>
   );
 }
-
-room.getInitialProps = async ({ query }) => {
-  const { roomCode } = query;
-  return api.getUsers(roomCode);
-};
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { roomCode } = context.query;
+const res = await api.getUsers(roomCode);
+  return {
+    props: {
+      ...res
+    }
+  }
+}
 
 room.propTypes = {
   roomCode: PropTypes.string.isRequired,
