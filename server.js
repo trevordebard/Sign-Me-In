@@ -28,6 +28,7 @@ nextApp
     const allowedOrigins = [
       'http://localhost:3000',
       'https://www.signmein.org',
+      'https://smirewrite.vercel.app',
     ];
     app.use(
       cors({
