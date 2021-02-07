@@ -3,7 +3,6 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const http = require('http');
 const SocketIO = require('socket.io');
-const sslRedirect = require('heroku-ssl-redirect');
 const cors = require('cors');
 
 require('dotenv').config();
@@ -23,7 +22,6 @@ nextApp
       })
     );
     // Redirect to https
-    app.use(sslRedirect());
 
     const allowedOrigins = [
       'http://localhost:3000',
