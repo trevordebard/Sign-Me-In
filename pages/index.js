@@ -37,11 +37,11 @@ const Content = styled.div`
   margin: 20px 0px;
 `;
 
-const Index = props => {
+const Index = (props) => {
   const [roomInput, setRoomeInput] = useState('');
   const [error, setError] = useState(null);
 
-  const handleJoinClick = async e => {
+  const handleJoinClick = async (e) => {
     if (!roomInput) {
       e.preventDefault();
       setError('Room code cannot be empty.');
@@ -63,7 +63,7 @@ const Index = props => {
     }
   };
   // If the enter/return key is pressed
-  const checkForEnterKey = e => {
+  const checkForEnterKey = (e) => {
     if (e.keyCode === 13) {
       handleJoinClick(e);
     }
@@ -76,7 +76,7 @@ const Index = props => {
   return (
     <Layout>
       <Box>
-        <Logo src="/static/images/SMI_logo.png" alt="Sign Me In"></Logo>
+        <Logo src="/static/images/SMI_logo.png" alt="Sign Me In" />
         <Content>
           <Link href="/generate">
             <StyledButton>Generate Room</StyledButton>
@@ -86,17 +86,13 @@ const Index = props => {
             <StyledInput
               placeholder="Enter room code"
               onKeyDown={checkForEnterKey}
-              onChange={e => {
+              onChange={(e) => {
                 setError(null);
                 setRoomeInput(e.target.value.toUpperCase());
               }}
               value={roomInput}
             />
-            <StyledFontAwesomeIcon
-              icon="angle-right"
-              width="0"
-              onClick={handleJoinClick}
-            />
+            <StyledFontAwesomeIcon icon="angle-right" width="0" onClick={handleJoinClick} />
           </RoomCodeInput>
           {error && <ErrorText>{error}</ErrorText>}
         </Content>
