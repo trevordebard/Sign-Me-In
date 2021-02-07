@@ -61,7 +61,7 @@ function generate() {
       Router.push(`/room/[roomCode]`, `/room/${res.data.payload.roomCode}`);
     } else if (res.data.status === 'KNOWN') {
       setError(res.data.payload.message);
-    } else if (res.err) {
+    } else if (res.data.err) {
       console.log('There was an Unkown error');
     } else {
       setError('Unkown error. Please try again or contact support');

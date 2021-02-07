@@ -61,6 +61,7 @@ function room({ roomCode, users, message }) {
   const [userObjects, setUserObjects] = useState(users);
   const [errorMessage, setErrorMessage] = useState(message);
   const namesContainer = useRef(null);
+  // @ts-ignore
   const { current: socket } = useRef(io(publicRuntimeConfig.SOCKET_URL));
 
   useEffect(() => {

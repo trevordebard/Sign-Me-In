@@ -85,15 +85,16 @@ export const addUser = async payload => {
   };
 };
 
-export const generateRoom = async (fields): Promise<AxiosResponse<{fields?: string[], status?: string}>> => {
-  let response: AxiosResponse<{ fields: string[] }>;
-  try {
-    response = await axios.post(`${API_URL}/room`, {
-      fields,
-    });
-  } catch (err) {
-    console.log(err);
-    return { err };
-  }
+interface iGenerateRoomResponse {
+  status: string;
+  reason: string;
+  payload: any;
+  err?: boolean 
+}
+export const generateRoom = async (fields): Promise<AxiosResponse<iGenerateRoomResponse>> => {
+  let response: AxiosResponse<iGenerateRoomResponse>;
+  response = await axios.post(`${API_URL}/room`, {
+    fields,
+  });
   return response;
 };

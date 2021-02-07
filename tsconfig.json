@@ -78,6 +78,7 @@
     "**/*.tsx",
     "next-env.d.ts",
     "next.config.js",
-    "pages/index.js"
+    "pages/index.js",
+    "pages/join/[roomCode].js"
   ]
 }

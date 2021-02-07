@@ -127,7 +127,7 @@ const Join = ({ message, fields }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps = async (context) => {
   const { roomCode } = context.query;
   try {
     const response = await api.getRoomInfo(roomCode);
@@ -169,7 +169,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 // Join.getInitialProps = async ({ query, res }) => {
-  
+
 // };
 
 export default Join;
