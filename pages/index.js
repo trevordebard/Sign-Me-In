@@ -4,7 +4,6 @@ import Router from 'next/router';
 import styled from 'styled-components';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
-import Divider from '../components/global-styles/Divider';
 import StyledButton from '../components/global-styles/StyledButton';
 import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesomeIcon';
 import StyledInput from '../components/global-styles/StyledInput';
@@ -78,7 +77,6 @@ const Index = props => {
     <Layout>
       <Box>
         <Logo src="/static/images/SMI_logo.png" alt="Sign Me In"></Logo>
-        <Divider />
         <Content>
           <Link href="/generate">
             <StyledButton>Generate Room</StyledButton>
@@ -93,7 +91,7 @@ const Index = props => {
                 setRoomeInput(e.target.value.toUpperCase());
               }}
               value={roomInput}
-            ></StyledInput>
+            />
             <StyledFontAwesomeIcon
               icon="angle-right"
               width="0"

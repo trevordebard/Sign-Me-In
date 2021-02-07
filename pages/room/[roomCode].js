@@ -95,7 +95,6 @@ function room({ roomCode, users, message }) {
           <p>Room Code: </p>
           <h1>{roomCode}</h1>
         </Header>
-        <Divider />
         <NamesContainer ref={namesContainer}>
           {userObjects &&
             userObjects.map(user => (

@@ -7,7 +7,6 @@ import Divider from '../components/global-styles/Divider';
 import StyledFontAwesomeIcon from '../components/global-styles/StyledFontAwesomeIcon';
 import theme from '../theme';
 import StyledButton from '../components/global-styles/StyledButton';
-import HoverButton from '../components/global-styles/HoverButton';
 import StyledInput from '../components/global-styles/StyledInput';
 import ErrorText from '../components/global-styles/ErrorText';
 import * as api from '../lib/api';
@@ -74,7 +73,6 @@ function generate() {
     <Layout>
       <Box>
         <h3>What information do you need?</h3>
-        <Divider />
         <StyledList>
           {roomFields.map((field, index) => {
             return (
@@ -102,9 +100,9 @@ function generate() {
             value={fieldInput}
             placeholder="Enter Field"
           ></StyledInput>
-          <HoverButton type="button" onClick={addField} padding="1.2rem">
+          <StyledButton outline type="button" onClick={addField} padding="1.2rem">
             ADD
-          </HoverButton>
+          </StyledButton>
         </InputContainer>
         <StyledButton onClick={handleCreate} type="button" padding="1.2rem">
           Create Room

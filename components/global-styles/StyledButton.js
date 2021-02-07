@@ -1,17 +1,36 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-export default styled.button`
-  text-transform: uppercase;
-  background: ${props => props.theme.primary};
-  border: 0;
+const StyledButton = styled.button`
+  background-color: ${props => props.theme.primary};
+  color: white;
+  border-radius: 5px;
+  border: 0px;
   padding: ${props => (props.padding ? props.padding : '15px')};
-  color: #ffffff;
-  font-size: 14px;
+  font-size: 1.6rem;
   cursor: pointer;
   &:hover {
-    background: ${props => props.theme.primary_light};
-    :hover {
-      box-shadow: 0 2px 3px hsla(0, 0%, 0%, 0.2);
+    box-shadow: var(--level2);
+    background-color: ${props => props.theme.primary_light};
+  }
+  &:disabled {
+    background-color: var(--buttonSubtle);
+    cursor: auto;
+    &:hover {
+      box-shadow: none;
+      background-color: var(--buttonSubtle);
     }
   }
+  ${props => props.outline && outlineCss}
 `;
+
+const outlineCss = css`
+  background-color: transparent;
+  border: 1px solid ${props => props.theme.primary};
+  color: ${props => props.theme.primary};
+  :hover {
+    color: white;
+    background-color: ${props => props.theme.primary};
+  }
+`;
+
+export default StyledButton;

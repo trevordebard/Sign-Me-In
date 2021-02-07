@@ -60,7 +60,7 @@ export default class MyApp extends App {
     return (
       <Container>
         <ThemeProvider theme={theme}>
-          <React.Fragment>
+          <>
             <Head>
               <title>Sign Me In</title>
               <link
@@ -71,7 +71,7 @@ export default class MyApp extends App {
               <link
                 href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap"
                 rel="stylesheet"
-              ></link>
+              />
               {/* Global Site Tag (gtag.js) - Google Analytics */}
               <script
                 async
@@ -90,7 +90,7 @@ export default class MyApp extends App {
             </Head>
             <GlobalStyle />
             <Component {...pageProps} />
-          </React.Fragment>
+          </>
         </ThemeProvider>
       </Container>
     );
