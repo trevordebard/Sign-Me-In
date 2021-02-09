@@ -97,8 +97,13 @@ function generate() {
             onChange={e => handleFieldInputChange(e)}
             value={fieldInput}
             placeholder="Enter Field"
-          ></StyledInput>
-          <StyledButton outline type="button" onClick={addField} padding="1.2rem">
+          />
+          <StyledButton
+            outline
+            type="button"
+            onClick={addField}
+            padding="1.2rem"
+          >
             ADD
           </StyledButton>
         </InputContainer>

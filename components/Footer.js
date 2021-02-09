@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import StyledFontAwesomeIcon from './global-styles/StyledFontAwesomeIcon';
 
@@ -16,7 +14,7 @@ const FooterContainer = styled.div`
     margin: 5px;
   }
 `;
-function Footer(props) {
+function Footer() {
   return (
     <FooterContainer>
       <p>Created By Trevor DeBardeleben</p>

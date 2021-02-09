@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import theme from '../theme';

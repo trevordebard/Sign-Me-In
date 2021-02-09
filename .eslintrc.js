@@ -27,5 +27,7 @@ module.exports = {
     'import/extensions': 'off', // Allows you to import from files with out specifying extension
     'react/react-in-jsx-scope': 'off', // Removes warning if React is not imported at the top of every file
     'no-use-before-define': 'off', // Allows use of functions before they are defined
+    'react/jsx-props-no-spreading': 'off', // Allows prop spreading
+    'react/prop-types': 'off', // Do not require prop types (this should be re-evaluated later)
   },
 };

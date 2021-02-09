@@ -12,7 +12,6 @@ import StyledInput from '../../components/global-styles/StyledInput';
 import StyledButton from '../../components/global-styles/StyledButton';
 import DividerWithText from '../../components/global-styles/DividerWithText';
 import ErrorText from '../../components/global-styles/ErrorText';
-import { GetServerSideProps } from 'next';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -102,18 +101,18 @@ const Join = ({ message, fields }) => {
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       <DividerWithText>or</DividerWithText>
       <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
-        <a>View Room Users</a>
+        View Room Users
       </Link>
     </div>
   );
   const renderSubmitted = () => (
-    <React.Fragment>
+    <>
       <h1>Submitted!</h1>
       <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
-        <a>Visit Room</a>
+        Visit Room
       </Link>
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
-    </React.Fragment>
+    </>
   );
   return (
     <Layout>
@@ -127,13 +126,13 @@ const Join = ({ message, fields }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async context => {
   const { roomCode } = context.query;
   try {
     const response = await api.getRoomInfo(roomCode);
     if (response.roomExists) {
       return {
-        props: response
+        props: response,
       };
     }
     if (response.reason === 'roomDoesNotExist') {
@@ -166,7 +165,7 @@ export const getServerSideProps = async (context) => {
       },
     };
   }
-}
+};
 
 // Join.getInitialProps = async ({ query, res }) => {
 

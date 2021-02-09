@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import getConfig from 'next/config';
+import { GetServerSideProps } from 'next';
 import Layout from '../../components/Layout';
 import Box from '../../components/Box';
 import ErrorText from '../../components/global-styles/ErrorText';
@@ -10,7 +11,6 @@ import StyledButton from '../../components/global-styles/StyledButton';
 import generateCSV from '../../utils/generateCSV';
 import flattenObject from '../../utils/flattenObject';
 import * as api from '../../lib/api';
-import { GetServerSideProps } from 'next';
 
 const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
@@ -59,7 +59,7 @@ const Name = styled.p`
 const Anchor = styled.div``;
 function room({ roomCode, users, message }) {
   const [userObjects, setUserObjects] = useState(users);
-  const [errorMessage, setErrorMessage] = useState(message);
+  const [errorMessage] = useState(message);
   const namesContainer = useRef(null);
   // @ts-ignore
   const { current: socket } = useRef(io(publicRuntimeConfig.SOCKET_URL));
@@ -100,9 +100,9 @@ function room({ roomCode, users, message }) {
           {userObjects &&
             userObjects.map(user => (
               <Name
-                key={`${Math.random()
-                  .toString(36)
-                  .substring(7)}_${user.display_name}`}
+                key={`${Math.random().toString(36).substring(7)}_${
+                  user.display_name
+                }`}
               >
                 {user.display_name}
               </Name>
@@ -117,15 +117,15 @@ function room({ roomCode, users, message }) {
     </Layout>
   );
 }
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async context => {
   const { roomCode } = context.query;
-const res = await api.getUsers(roomCode);
+  const res = await api.getUsers(roomCode);
   return {
     props: {
-      ...res
-    }
-  }
-}
+      ...res,
+    },
+  };
+};
 
 room.propTypes = {
   roomCode: PropTypes.string.isRequired,

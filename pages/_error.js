@@ -3,14 +3,12 @@ import Link from 'next/link';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 
-function generate(props) {
+function generate() {
   return (
     <Layout>
       <Box>
         <h3>That Page Could Not Be Found</h3>
-        <Link href="/">
-          <a>Click here to go home</a>
-        </Link>
+        <Link href="/">Click here to go home</Link>
       </Box>
     </Layout>
   );

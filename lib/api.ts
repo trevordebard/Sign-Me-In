@@ -89,11 +89,12 @@ interface iGenerateRoomResponse {
   status: string;
   reason: string;
   payload: any;
-  err?: boolean 
+  err?: boolean;
 }
-export const generateRoom = async (fields): Promise<AxiosResponse<iGenerateRoomResponse>> => {
-  let response: AxiosResponse<iGenerateRoomResponse>;
-  response = await axios.post(`${API_URL}/room`, {
+export const generateRoom = async (
+  fields
+): Promise<AxiosResponse<iGenerateRoomResponse>> => {
+  const response = await axios.post(`${API_URL}/room`, {
     fields,
   });
   return response;
