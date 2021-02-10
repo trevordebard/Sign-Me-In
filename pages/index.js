@@ -73,11 +73,10 @@ const Index = () => {
     <Layout>
       <Box>
         <Image
-          src="/images/logo.svg"
+          src="/images/SMI_logo.png"
           alt="Sign Me In"
           width="180"
           height="50"
-          type="image/svg+xml"
         />
         {/* <Logo src="/images/SMI_logo.png" alt="Sign Me In" /> */}
         <Content>
