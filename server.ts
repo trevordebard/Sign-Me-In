@@ -1,9 +1,9 @@
-const express = require('express');
-const next = require('next');
-const bodyParser = require('body-parser');
-const http = require('http');
-const SocketIO = require('socket.io');
-const cors = require('cors');
+import express from 'express';
+import next from 'next';
+import bodyParser from 'body-parser';
+import http from 'http';
+import SocketIO from 'socket.io';
+import cors from 'cors';
 
 require('dotenv').config();
 const db = require('./queries');
@@ -21,16 +21,31 @@ nextApp
         extended: true,
       })
     );
-    // Redirect to https
 
     const allowedOrigins = [
       'http://localhost:3000',
+      'http://localhost:5000',
       'https://www.signmein.org',
-      'https://smirewrite.vercel.app',
+      'https://smi-staging.herokuapp.com',
     ];
-    app.use(cors());
-    const server = http.Server(app);
-    const io = SocketIO(server);
+    app.use(
+      cors({
+        origin(origin, callback) {
+          // allow requests with no origin
+          // (like mobile apps or curl requests)
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.indexOf(origin) === -1) {
+            const msg =
+              'The CORS policy for this site does not ' +
+              'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+          }
+          return callback(null, true);
+        },
+      })
+    );
+    const server = new http.Server(app);
+    const io = new SocketIO.Server(server);
 
     app.get('/api/fields/:roomCode', db.getRoomFields);
     app.get('/api/room/:roomCode', db.getUsers);
@@ -38,11 +53,11 @@ nextApp
     app.post('/api/user', db.addUser);
 
     app.get('*', (req, res) => {
+      // @ts-ignore
       return handle(req, res, '/notfound');
     });
     const port = process.env.PORT || 3000;
-    server.listen(port, err => {
-      if (err) throw err;
+    server.listen(port, () => {
       console.log(`> Ready on port ${port}`);
     });
 
@@ -50,12 +65,10 @@ nextApp
       console.log('connection!');
       socket.emit('news', { hello: 'world' });
       socket.on('new-user', data => {
-        console.log('server: new user');
         const { roomCode, ...user } = data;
         socket.to(roomCode).emit('add-user', { user });
       });
       socket.on('join-room', roomCode => {
-        console.log('server: join room');
         socket.join(roomCode);
       });
       socket.on('error', res => {
