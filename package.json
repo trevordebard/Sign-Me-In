@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.ts",
+    "dev": "nodemon --exec 'ts-node --project tsconfig.server.json' server.ts",
     "nodemon": "nodemon server.ts",
-    "build": "next build",
-    "start": "NODE_ENV=production ts-node server.ts",
+    "build": "next build && tsc --project tsconfig.server.json",
+    "start": "NODE_ENV=production node dist/server.js",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "keywords": [],
