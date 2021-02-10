@@ -66,7 +66,7 @@ export default class MyApp extends App {
               <link
                 rel="shortcut icon"
                 type="image/x-icon"
-                href="static/images/favicon.ico"
+                href="images/favicon.ico"
               />
               <link
                 href="https://fonts.googleapis.com/css?family=Montserrat:400,500&display=swap"

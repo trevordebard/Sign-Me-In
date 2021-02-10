@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import styled from 'styled-components';
+import Image from 'next/image';
 import Layout from '../components/Layout';
 import Box from '../components/Box';
 import StyledButton from '../components/global-styles/StyledButton';
@@ -10,11 +11,6 @@ import StyledInput from '../components/global-styles/StyledInput';
 import DividerWithText from '../components/global-styles/DividerWithText';
 import ErrorText from '../components/global-styles/ErrorText';
 import * as api from '../lib/api';
-
-const Logo = styled.img`
-  width: 180px;
-  height: auto;
-`;
 
 const RoomCodeInput = styled.div`
   display: flex;
@@ -76,7 +72,14 @@ const Index = () => {
   return (
     <Layout>
       <Box>
-        <Logo src="/static/images/SMI_logo.png" alt="Sign Me In" />
+        <Image
+          src="/images/logo.svg"
+          alt="Sign Me In"
+          width="180"
+          height="50"
+          type="image/svg+xml"
+        />
+        {/* <Logo src="/images/SMI_logo.png" alt="Sign Me In" /> */}
         <Content>
           <Link href="/generate">
             <StyledButton>Generate Room</StyledButton>
