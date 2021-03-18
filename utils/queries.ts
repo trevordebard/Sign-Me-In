@@ -1,6 +1,6 @@
 import prisma from '../prisma/client';
 import { generateRandomString } from '.';
-import { smiResponse } from '../lib/types';
+import { iGetFieldsResponse, smiResponse } from '../lib/types';
 
 async function createRoom(fields: string[]): Promise<smiResponse> {
   const roomCode = await getUniqueRoom();
@@ -40,11 +40,48 @@ async function getUniqueRoom(): Promise<string> {
   // Generate a room code. If the room exists, try again until max attempts are reached
   while (roomAlreadyExists && attempts < maxAttempts) {
     roomCode = generateRandomString(4);
-    roomAlreadyExists = !!(await prisma.rooms.findFirst({
-      where: { room_code: { equals: roomCode } },
-    }));
+    roomAlreadyExists = await doesRoomExist(roomCode);
     attempts += 1;
   }
   return roomCode;
 }
-export { createRoom };
+
+async function doesRoomExist(roomCode: string): Promise<boolean> {
+  return !!(await prisma.rooms.findFirst({
+    where: { room_code: { equals: roomCode } },
+  }));
+}
+async function getFields(roomCode: string): Promise<iGetFieldsResponse> {
+  console.log(roomCode);
+  // Check if room exists
+  const roomExists = await doesRoomExist(roomCode);
+
+  // If room does not exist, return error
+  if (!roomExists) {
+    return {
+      status: 'KNOWN',
+      reason: 'roomDoesNotExist',
+      payload: {
+        message: 'The room requested does not exist',
+        roomCode,
+        fields: null,
+      },
+    };
+  }
+
+  // Retrieve fields
+  const { fields } = await prisma.rooms.findFirst({
+    where: { room_code: { equals: roomCode } },
+  });
+
+  return {
+    status: 'SUCCESS',
+    reason: null,
+    payload: {
+      fields,
+      message: 'Successfully retrieved fields',
+    },
+  };
+}
+
+export { createRoom, getFields };

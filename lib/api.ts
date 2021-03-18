@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
+import { iGetFieldsResponse } from './types';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -36,7 +37,9 @@ export const getUsers = async roomCode => {
 
 export const getRoomInfo = async roomCode => {
   try {
-    const response = await axios.get(`${API_URL}/fields/${roomCode}`);
+    const response: AxiosResponse<iGetFieldsResponse> = await axios.get(
+      `${API_URL}/fields/${roomCode}`
+    );
     if (response.data.status === 'KNOWN') {
       if (response.data.reason === 'roomDoesNotExist') {
         return {
@@ -56,7 +59,7 @@ export const getRoomInfo = async roomCode => {
     }
     return {
       roomExists: true,
-      fields: response.data.payload,
+      fields: response.data.payload.fields,
       userApi: `${API_URL}/user`,
       roomCode,
     };
