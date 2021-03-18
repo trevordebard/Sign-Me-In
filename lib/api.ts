@@ -1,11 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
-import { iGetFieldsResponse } from './types';
+import { iGetFieldsResponse, iGetUsersResponse } from './types';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const getUsers = async roomCode => {
   try {
-    const response = await axios.get(`${API_URL}/room/${roomCode}`);
+    const response: AxiosResponse<iGetUsersResponse> = await axios.get(
+      `${API_URL}/room/${roomCode}`
+    );
     if (response.data.status === 'KNOWN') {
       if (response.data.reason === 'roomDoesNotExist') {
         return {
@@ -23,7 +25,7 @@ export const getUsers = async roomCode => {
       return { error: true, message: 'An unknown error occurred', roomCode };
     }
     if (response.data.status === 'SUCCESS') {
-      return { roomCode, users: response.data.payload };
+      return { roomCode, users: response.data.payload.users };
     }
     return { error: true, message: 'An unknown error occurred', roomCode };
   } catch (err) {

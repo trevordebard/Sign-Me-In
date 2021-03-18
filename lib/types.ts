@@ -1,3 +1,5 @@
+import { users } from '@prisma/client';
+
 export interface smiResponse {
   status: 'SUCCESS' | 'KNOWN' | 'UNKNOWN';
   reason: 'roomDoesNotExist' | 'connectionRefused'; // TODO: rename field to errorCode
@@ -9,10 +11,16 @@ interface iResponsePayload {
   [otherOptions: string]: any;
 }
 
+export interface iGetFieldsResponse extends smiResponse {
+  payload: iGetFieldsPayload;
+}
 interface iGetFieldsPayload extends iResponsePayload {
   fields: string[];
 }
 
-export interface iGetFieldsResponse extends smiResponse {
-  payload: iGetFieldsPayload;
+export interface iGetUsersResponse extends smiResponse {
+  payload: iGetUsersPayload;
+}
+interface iGetUsersPayload extends iResponsePayload {
+  users: users[];
 }

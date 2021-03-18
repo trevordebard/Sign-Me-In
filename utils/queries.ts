@@ -1,6 +1,10 @@
 import prisma from '../prisma/client';
 import { generateRandomString } from '.';
-import { iGetFieldsResponse, smiResponse } from '../lib/types';
+import {
+  iGetFieldsResponse,
+  iGetUsersResponse,
+  smiResponse,
+} from '../lib/types';
 
 async function createRoom(fields: string[]): Promise<smiResponse> {
   const roomCode = await getUniqueRoom();
@@ -52,7 +56,6 @@ async function doesRoomExist(roomCode: string): Promise<boolean> {
   }));
 }
 async function getFields(roomCode: string): Promise<iGetFieldsResponse> {
-  console.log(roomCode);
   // Check if room exists
   const roomExists = await doesRoomExist(roomCode);
 
@@ -84,4 +87,47 @@ async function getFields(roomCode: string): Promise<iGetFieldsResponse> {
   };
 }
 
-export { createRoom, getFields };
+async function getUsers(roomCode: string): Promise<iGetUsersResponse> {
+  // Check if room exists
+  const roomExists = await doesRoomExist(roomCode);
+
+  // If room does not exist, return error
+  if (!roomExists) {
+    return {
+      status: 'KNOWN',
+      reason: 'roomDoesNotExist',
+      payload: {
+        message: 'The room requested does not exist',
+        roomCode,
+        users: null,
+      },
+    };
+  }
+
+  // Get room's users
+  try {
+    const users = await prisma.users.findMany({
+      where: { room_code: roomCode },
+    });
+    return {
+      status: 'SUCCESS',
+      reason: null,
+      payload: {
+        message: `Successfully retrieved users for room ${roomCode}`,
+        users,
+      },
+    };
+  } catch (e) {
+    return {
+      status: 'UNKNOWN',
+      reason: null,
+      payload: {
+        message:
+          'There was an unknown error retrieving users. Please try again or contact support',
+        users: null,
+      },
+    };
+  }
+}
+
+export { createRoom, getFields, getUsers };

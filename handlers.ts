@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { createRoom, getFields } from './utils/queries';
+import { createRoom, getFields, getUsers } from './utils/queries';
 
 async function createRoomHandler(req: Request, res: Response) {
   const { fields } = req.body;
@@ -23,4 +23,15 @@ async function getFieldsHandler(req: Request, res: Response) {
   return res.status(400).json(fieldsResponse);
 }
 
-export { createRoomHandler, getFieldsHandler };
+async function getUsersHandler(req: Request, res: Response) {
+  const { roomCode } = req.params;
+
+  const usersResponse = await getUsers(roomCode);
+
+  if (usersResponse.status === 'SUCCESS') {
+    return res.status(200).json(usersResponse);
+  }
+  return res.status(400).json(usersResponse);
+}
+
+export { createRoomHandler, getFieldsHandler, getUsersHandler };

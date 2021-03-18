@@ -97,14 +97,14 @@ function room({ roomCode, users, message }) {
           <h1>{roomCode}</h1>
         </Header>
         <NamesContainer ref={namesContainer}>
-          {userObjects &&
+          {userObjects.length > 0 &&
             userObjects.map(user => (
               <Name
                 key={`${Math.random().toString(36).substring(7)}_${
-                  user.display_name
+                  user.first_name
                 }`}
               >
-                {user.display_name}
+                {`${user.first_name} ${user.last_name}`}
               </Name>
             ))}
           <Anchor />
