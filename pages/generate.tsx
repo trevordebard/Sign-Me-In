@@ -43,6 +43,7 @@ function generate() {
   const [roomFields, setRoomFields] = useState(['First Name', 'Last Name']);
   const [fieldInput, setFieldInput] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const addField = () => {
     if (fieldInput !== '') {
@@ -56,7 +57,9 @@ function generate() {
   const handleFieldInputChange = e => setFieldInput(e.target.value);
 
   const handleCreate = async () => {
+    setLoading(true);
     const res = await api.generateRoom(roomFields);
+    setLoading(false);
     if (res && res.data.status === 'SUCCESS') {
       Router.push(`/room/[roomCode]`, `/room/${res.data.payload.roomCode}`);
     } else if (res.data.status === 'KNOWN') {
@@ -107,7 +110,12 @@ function generate() {
             ADD
           </StyledButton>
         </InputContainer>
-        <StyledButton onClick={handleCreate} type="button" padding="1.2rem">
+        <StyledButton
+          onClick={handleCreate}
+          type="button"
+          padding="1.2rem"
+          loading={loading}
+        >
           Create Room
         </StyledButton>
         {error && <ErrorText>{error}</ErrorText>}
