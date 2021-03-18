@@ -8,27 +8,28 @@ export const getUsers = async roomCode => {
     const response: AxiosResponse<iGetUsersResponse> = await axios.get(
       `${API_URL}/room/${roomCode}`
     );
-    if (response.data.status === 'KNOWN') {
-      if (response.data.reason === 'roomDoesNotExist') {
-        return {
-          message: response.data.payload.message,
-          roomCode,
-        };
-      }
-      if (response.data.reason === 'connectionRefused') {
-        return {
-          error: response.data.payload.error,
-          message: response.data.payload.message,
-          roomCode,
-        };
-      }
-      return { error: true, message: 'An unknown error occurred', roomCode };
-    }
+
     if (response.data.status === 'SUCCESS') {
       return { roomCode, users: response.data.payload.users };
     }
     return { error: true, message: 'An unknown error occurred', roomCode };
   } catch (err) {
+    if (err.response.data.status === 'KNOWN') {
+      if (err.response.data.reason === 'roomDoesNotExist') {
+        return {
+          message: err.response.data.payload.message,
+          roomCode,
+        };
+      }
+      if (err.response.data.reason === 'connectionRefused') {
+        return {
+          error: err.response.data.payload.error,
+          message: err.response.data.payload.message,
+          roomCode,
+        };
+      }
+      return { error: true, message: 'An unknown error occurred', roomCode };
+    }
     return {
       error: err,
       message: 'And unkown error occurred',
@@ -42,23 +43,6 @@ export const getRoomInfo = async roomCode => {
     const response: AxiosResponse<iGetFieldsResponse> = await axios.get(
       `${API_URL}/fields/${roomCode}`
     );
-    if (response.data.status === 'KNOWN') {
-      if (response.data.reason === 'roomDoesNotExist') {
-        return {
-          roomExists: false,
-          status: 'KNOWN',
-          reason: 'roomDoesNotExist',
-        };
-      }
-      if (response.data.reason === 'connectionRefused') {
-        return {
-          error: true,
-          message: response.data.payload.message,
-          status: 'KNOWN',
-          reason: 'connectionRefused',
-        };
-      }
-    }
     return {
       roomExists: true,
       fields: response.data.payload.fields,
@@ -66,6 +50,23 @@ export const getRoomInfo = async roomCode => {
       roomCode,
     };
   } catch (err) {
+    if (err.response.data.status === 'KNOWN') {
+      if (err.response.data.reason === 'roomDoesNotExist') {
+        return {
+          roomExists: false,
+          status: 'KNOWN',
+          reason: 'roomDoesNotExist',
+        };
+      }
+      if (err.response.data.reason === 'connectionRefused') {
+        return {
+          error: true,
+          message: err.response.data.payload.message,
+          status: 'KNOWN',
+          reason: 'connectionRefused',
+        };
+      }
+    }
     return { roomExists: false, error: err };
   }
 };
