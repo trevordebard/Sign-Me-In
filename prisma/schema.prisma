@@ -1,0 +1,27 @@
+generator client {
+  provider        = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// TODO: make model names and db tables singular
+model rooms {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  room_code  String    @unique @db.VarChar(10)
+  fields     String[]
+  created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamp(6)
+  users      users[]
+}
+
+model users {
+  id         String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  room_code  String?   @db.VarChar(10)
+  first_name String?
+  last_name  String?
+  data       Json?
+  created_at DateTime? @default(dbgenerated("timezone('utc'::text, now())")) @db.Timestamp(6)
+  rooms      rooms?    @relation(fields: [room_code], references: [room_code])
+}
