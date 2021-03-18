@@ -1,7 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 import { iGetFieldsResponse, iGetUsersResponse } from './types';
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL;
+export const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://www.signmein.org/api'
+    : process.env.NEXT_PUBLIC_API_URL;
 
 export const getUsers = async roomCode => {
   try {
