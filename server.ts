@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import http from 'http';
 import SocketIO from 'socket.io';
 import cors from 'cors';
-import { createRoom } from './handlers';
+import { createRoomHandler } from './handlers';
 
 require('dotenv').config();
 const db = require('./queries');
@@ -50,7 +50,7 @@ nextApp
 
     app.get('/api/fields/:roomCode', db.getRoomFields);
     app.get('/api/room/:roomCode', db.getUsers);
-    app.post('/api/room', createRoom);
+    app.post('/api/room', createRoomHandler);
     app.post('/api/user', db.addUser);
 
     app.get('*', (req, res) => {
