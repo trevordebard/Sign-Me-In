@@ -24,3 +24,9 @@ export interface iGetUsersResponse extends smiResponse {
 interface iGetUsersPayload extends iResponsePayload {
   users: users[];
 }
+export interface iAddUserResponse extends smiResponse {
+  payload: iAddUserPayload;
+}
+interface iAddUserPayload extends iResponsePayload {
+  user: users;
+}

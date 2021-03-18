@@ -5,13 +5,13 @@ import http from 'http';
 import SocketIO from 'socket.io';
 import cors from 'cors';
 import {
+  addUserHandler,
   createRoomHandler,
   getFieldsHandler,
   getUsersHandler,
 } from './handlers';
 
 require('dotenv').config();
-const db = require('./queries');
 
 const dev = process.env.NODE_ENV !== 'production';
 const nextApp = next({ dev });
@@ -55,7 +55,7 @@ nextApp
     app.get('/api/fields/:roomCode', getFieldsHandler);
     app.get('/api/room/:roomCode', getUsersHandler);
     app.post('/api/room', createRoomHandler);
-    app.post('/api/user', db.addUser);
+    app.post('/api/user', addUserHandler);
 
     app.get('*', (req, res) => {
       // @ts-ignore

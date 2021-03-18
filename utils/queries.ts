@@ -3,6 +3,7 @@ import { generateRandomString } from '.';
 import {
   iGetFieldsResponse,
   iGetUsersResponse,
+  iAddUserResponse,
   smiResponse,
 } from '../lib/types';
 
@@ -130,4 +131,61 @@ async function getUsers(roomCode: string): Promise<iGetUsersResponse> {
   }
 }
 
-export { createRoom, getFields, getUsers };
+async function addUser(
+  roomCode: string,
+  firstName: string,
+  lastName: string,
+  additionalData: any
+): Promise<iAddUserResponse> {
+  // Check if room exists
+  const roomExists = await doesRoomExist(roomCode);
+
+  // If room does not exist, return error
+  if (!roomExists) {
+    return {
+      status: 'KNOWN',
+      reason: 'roomDoesNotExist',
+      payload: {
+        message: 'The room requested does not exist',
+        roomCode,
+        user: null,
+      },
+    };
+  }
+
+  // Create the user
+  try {
+    const user = await prisma.users.create({
+      data: {
+        room_code: roomCode,
+        first_name: firstName,
+        last_name: lastName,
+        data: additionalData,
+      },
+    });
+    return {
+      status: 'SUCCESS',
+      reason: null,
+      payload: {
+        message: `User successfully added to room${roomCode}`,
+        user,
+      },
+    };
+  } catch (e) {
+    console.error(
+      `There was a problem adding a user: ${firstName} ${lastName} to room: ${roomCode}`
+    );
+    console.error(e);
+    return {
+      status: 'UNKNOWN',
+      reason: null,
+      payload: {
+        message:
+          'An unknown error occurred joining the room. Please try again or contact support.',
+        user: null,
+      },
+    };
+  }
+}
+
+export { createRoom, getFields, getUsers, addUser };
