@@ -29,5 +29,6 @@ module.exports = {
     'no-use-before-define': 'off', // Allows use of functions before they are defined
     'react/jsx-props-no-spreading': 'off', // Allows prop spreading
     'react/prop-types': 'off', // Do not require prop types (this should be re-evaluated later)
+    'no-await-in-loop': 'off', // Allow await to be used inside loops
   },
 };
