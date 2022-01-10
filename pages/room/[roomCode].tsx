@@ -58,6 +58,7 @@ const Name = styled.p`
 
 const Anchor = styled.div``;
 function room({ roomCode, users, message }) {
+  console.log(users);
   const [userObjects, setUserObjects] = useState(users);
   const [errorMessage] = useState(message);
   const namesContainer = useRef(null);
@@ -100,9 +101,8 @@ function room({ roomCode, users, message }) {
           {userObjects.length > 0 &&
             userObjects.map(user => (
               <Name
-                key={`${Math.random().toString(36).substring(7)}_${
-                  user.first_name
-                }`}
+                key={`${Math.random().toString(36).substring(7)}_${user.first_name
+                  }`}
               >
                 {`${user.first_name} ${user.last_name}`}
               </Name>
@@ -120,9 +120,15 @@ function room({ roomCode, users, message }) {
 export const getServerSideProps: GetServerSideProps = async context => {
   const { roomCode } = context.query;
   const res = await api.getUsers(roomCode);
+  const users = res.users.map(u => {
+    const flattened = flattenObject(u);
+    const { id, created_at, ...user } = flattened;
+    return user;
+  });
   return {
     props: {
-      ...res,
+      users,
+      roomCode,
     },
   };
 };
