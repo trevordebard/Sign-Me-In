@@ -20,7 +20,8 @@ This web app is designed as an all encompassing attendance-tracking service for 
 
 ### Key Technologies:
 ---
-- JavaScript (mostly ES6 syntax)
+- JavaScript / TypeScript 
+- Next.js
 - Node.js
 - React
 - <span>Socket.</span>io
