@@ -73,6 +73,7 @@ const Join = ({ message, fields }) => {
         socket.emit('new-user', {
           ...user,
           display_name: `${user.first_name} ${user.last_name}`,
+          room_code: roomCode,
           roomCode,
         });
       } else if (response.status === 'KNOWN') {

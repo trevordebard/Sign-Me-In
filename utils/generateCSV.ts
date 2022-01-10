@@ -1,7 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { ExportToCsv } from 'export-to-csv';
+import { flattenObject } from 'utils';
+import { users as iUsers } from '.prisma/client';
 
-const generateCSV = data => {
+const generateCSV = (data: iUsers[]) => {
   const options = {
     fieldSeparator: ',',
     quoteStrings: '"',
@@ -15,22 +17,26 @@ const generateCSV = data => {
     filename: `Sign_Me_In_${new Date().toLocaleDateString()}`,
   };
   const csvExporter = new ExportToCsv(options);
-  const formatted = formatData(data);
+  const flattened = data.map(user => flattenObject(user));
+  const formatted = formatUsersForDownload(data);
   return csvExporter.generateCsv(formatted);
 };
 
 // Format data to rename First/Last name and remove display_name
-const formatData = data => {
-  const formatted = data.map(obj => {
-    const newObj = {
-      'First Name': obj.first_name,
-      'Last Name': obj.last_name,
-      ...obj,
+const formatUsersForDownload = (users: iUsers[]) => {
+  const formatted = users.map(user => {
+    const newUser = {
+      'First Name': user.first_name,
+      'Last Name': user.last_name,
+      ...user,
     };
-    delete newObj.first_name;
-    delete newObj.last_name;
-    delete newObj.display_name;
-    return newObj;
+
+    delete newUser.first_name;
+    delete newUser.last_name;
+    delete newUser.id;
+    delete newUser.created_at;
+
+    return flattenObject(newUser);
   });
   return formatted;
 };

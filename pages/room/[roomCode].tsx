@@ -9,8 +9,8 @@ import Box from '../../components/Box';
 import ErrorText from '../../components/global-styles/ErrorText';
 import StyledButton from '../../components/global-styles/StyledButton';
 import generateCSV from '../../utils/generateCSV';
-import flattenObject from '../../utils/flattenObject';
 import * as api from '../../lib/api';
+import { users as iUsers } from '.prisma/client';
 
 const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
@@ -59,7 +59,7 @@ const Name = styled.p`
 const Anchor = styled.div``;
 function room({ roomCode, users, message }) {
   console.log(users);
-  const [userObjects, setUserObjects] = useState(users);
+  const [userObjects, setUserObjects] = useState<iUsers[]>(users);
   const [errorMessage] = useState(message);
   const namesContainer = useRef(null);
   // @ts-ignore
@@ -70,7 +70,7 @@ function room({ roomCode, users, message }) {
       socket.open();
       socket.emit('join-room', roomCode);
       socket.on('add-user', data => {
-        setUserObjects(objs => [...objs, flattenObject(data.user)]);
+        setUserObjects(objs => [...objs, data.user]);
         scrollToBottom();
       });
     } catch (e) {
@@ -100,10 +100,7 @@ function room({ roomCode, users, message }) {
         <NamesContainer ref={namesContainer}>
           {userObjects.length > 0 &&
             userObjects.map(user => (
-              <Name
-                key={`${Math.random().toString(36).substring(7)}_${user.first_name
-                  }`}
-              >
+              <Name key={user.id}>
                 {`${user.first_name} ${user.last_name}`}
               </Name>
             ))}
@@ -120,14 +117,9 @@ function room({ roomCode, users, message }) {
 export const getServerSideProps: GetServerSideProps = async context => {
   const { roomCode } = context.query;
   const res = await api.getUsers(roomCode);
-  const users = res.users.map(u => {
-    const flattened = flattenObject(u);
-    const { id, created_at, ...user } = flattened;
-    return user;
-  });
   return {
     props: {
-      users,
+      users: res.users,
       roomCode,
     },
   };
