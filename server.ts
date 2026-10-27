@@ -62,8 +62,7 @@ nextApp
     app.post('/api/user', addUserHandler);
 
     app.get('*', (req, res) => {
-      // @ts-ignore
-      return handle(req, res, '/notfound');
+      return handle(req, res);
     });
     const port = process.env.PORT || 3000;
     server.listen(port, () => {
