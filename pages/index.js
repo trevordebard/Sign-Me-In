@@ -80,7 +80,7 @@ const Index = () => {
         />
         {/* <Logo src="/images/SMI_logo.png" alt="Sign Me In" /> */}
         <Content>
-          <Link href="/generate">
+          <Link legacyBehavior href="/generate">
             <StyledButton>Generate Room</StyledButton>
           </Link>
           <DividerWithText>or</DividerWithText>

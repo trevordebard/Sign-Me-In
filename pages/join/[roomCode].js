@@ -4,7 +4,6 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import createPersistedState from 'use-persisted-state';
 import io from 'socket.io-client';
-import getConfig from 'next/config';
 import * as api from '../../lib/api';
 import Layout from '../../components/Layout';
 import Box from '../../components/Box';
@@ -13,7 +12,6 @@ import StyledButton from '../../components/global-styles/StyledButton';
 import DividerWithText from '../../components/global-styles/DividerWithText';
 import ErrorText from '../../components/global-styles/ErrorText';
 
-const { publicRuntimeConfig } = getConfig();
 
 const useSumbittedState = createPersistedState('submitted');
 
@@ -69,7 +67,7 @@ const Join = ({ message, fields }) => {
       const response = await api.addUser({ ...user, roomCode });
       if (response.status === 'SUCCESS') {
         setSubmitted({ ...submitted, [roomCode]: true });
-        const socket = io(publicRuntimeConfig.SOCKET_URL);
+        const socket = io();
         socket.emit('new-user', {
           ...user,
           display_name: `${user.first_name} ${user.last_name}`,
@@ -101,7 +99,7 @@ const Join = ({ message, fields }) => {
       <StyledButton onClick={e => handleSubmit(e)}>Submit</StyledButton>
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
       <DividerWithText>or</DividerWithText>
-      <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
+      <Link legacyBehavior href="/room/[roomCode]" as={`/room/${roomCode}`}>
         View Room Users
       </Link>
     </div>
@@ -109,7 +107,7 @@ const Join = ({ message, fields }) => {
   const renderSubmitted = () => (
     <>
       <h1>Submitted!</h1>
-      <Link href="/room/[roomCode]" as={`/room/${roomCode}`}>
+      <Link legacyBehavior href="/room/[roomCode]" as={`/room/${roomCode}`}>
         Visit Room
       </Link>
       {errorMessage && <ErrorText>{errorMessage}</ErrorText>}

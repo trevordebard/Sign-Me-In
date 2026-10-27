@@ -8,7 +8,7 @@ function generate() {
     <Layout>
       <Box>
         <h3>That Page Could Not Be Found</h3>
-        <Link href="/">Click here to go home</Link>
+        <Link legacyBehavior href="/">Click here to go home</Link>
       </Box>
     </Layout>
   );

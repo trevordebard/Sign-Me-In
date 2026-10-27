@@ -1,10 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
 import { iGetFieldsResponse, iGetUsersResponse } from './types';
 
-export const API_URL =
-  process.env.NODE_ENV === 'production'
-    ? 'https://www.signmein.org/api'
-    : process.env.NEXT_PUBLIC_API_URL;
+// Server rendering calls the local API; browsers use their current origin.
+export const API_URL = typeof window === 'undefined'
+  ? `http://127.0.0.1:${process.env.PORT || 3000}/api`
+  : '/api';
 
 export const getUsers = async roomCode => {
   try {
@@ -17,17 +17,17 @@ export const getUsers = async roomCode => {
     }
     return { error: true, message: 'An unknown error occurred', roomCode };
   } catch (err) {
-    if (err.response.data.status === 'KNOWN') {
-      if (err.response.data.reason === 'roomDoesNotExist') {
+    if (err.response?.data.status === 'KNOWN') {
+      if (err.response?.data.reason === 'roomDoesNotExist') {
         return {
-          message: err.response.data.payload.message,
+          message: err.response?.data.payload.message,
           roomCode,
         };
       }
-      if (err.response.data.reason === 'connectionRefused') {
+      if (err.response?.data.reason === 'connectionRefused') {
         return {
-          error: err.response.data.payload.error,
-          message: err.response.data.payload.message,
+          error: err.response?.data.payload.error,
+          message: err.response?.data.payload.message,
           roomCode,
         };
       }
@@ -53,18 +53,18 @@ export const getRoomInfo = async roomCode => {
       roomCode,
     };
   } catch (err) {
-    if (err.response.data.status === 'KNOWN') {
-      if (err.response.data.reason === 'roomDoesNotExist') {
+    if (err.response?.data.status === 'KNOWN') {
+      if (err.response?.data.reason === 'roomDoesNotExist') {
         return {
           roomExists: false,
           status: 'KNOWN',
           reason: 'roomDoesNotExist',
         };
       }
-      if (err.response.data.reason === 'connectionRefused') {
+      if (err.response?.data.reason === 'connectionRefused') {
         return {
           error: true,
-          message: err.response.data.payload.message,
+          message: err.response?.data.payload.message,
           status: 'KNOWN',
           reason: 'connectionRefused',
         };

@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import io from 'socket.io-client';
-import getConfig from 'next/config';
 import { GetServerSideProps } from 'next';
 import Layout from '../../components/Layout';
 import Box from '../../components/Box';
@@ -12,7 +11,6 @@ import generateCSV from '../../utils/generateCSV';
 import * as api from '../../lib/api';
 import { users as iUsers } from '.prisma/client';
 
-const { publicRuntimeConfig } = getConfig();
 const RoomBox = styled(Box)`
   max-width: 80vw;
   height: auto;
@@ -63,7 +61,7 @@ function room({ roomCode, users, message }) {
   const [errorMessage] = useState(message);
   const namesContainer = useRef(null);
   // @ts-ignore
-  const { current: socket } = useRef(io(publicRuntimeConfig.SOCKET_URL));
+  const { current: socket } = useRef(io({ autoConnect: false }));
 
   useEffect(() => {
     try {

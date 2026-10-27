@@ -2,7 +2,7 @@ import express from 'express';
 import next from 'next';
 import bodyParser from 'body-parser';
 import http from 'http';
-import SocketIO from 'socket.io';
+import { Server as SocketIOServer } from 'socket.io';
 import cors from 'cors';
 import {
   addUserHandler,
@@ -31,6 +31,8 @@ nextApp
       'http://localhost:3000',
       'http://localhost:5000',
       'https://www.signmein.org',
+      'https://signmein.org',
+      'https://signmein.trevordebard.com',
       'https://smi-staging.herokuapp.com',
     ];
     app.use(
@@ -50,7 +52,9 @@ nextApp
       })
     );
     const server = new http.Server(app);
-    const io = new SocketIO.Server(server);
+    const io = new SocketIOServer(server);
+
+    app.get('/healthz', (_req, res) => res.json({ ok: true }));
 
     app.get('/api/fields/:roomCode', getFieldsHandler);
     app.get('/api/room/:roomCode', getUsersHandler);
