@@ -1,5 +1,5 @@
 /* eslint-disable react/no-danger */
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import Router from 'next/router';
 import React from 'react';
 import { ThemeProvider, createGlobalStyle } from 'styled-components';
@@ -58,7 +58,7 @@ export default class MyApp extends App {
   render() {
     const { Component, pageProps } = this.props;
     return (
-      <Container>
+      <>
         <ThemeProvider theme={theme}>
           <>
             <Head>
@@ -92,7 +92,7 @@ export default class MyApp extends App {
             <Component {...pageProps} />
           </>
         </ThemeProvider>
-      </Container>
+      </>
     );
   }
 }
